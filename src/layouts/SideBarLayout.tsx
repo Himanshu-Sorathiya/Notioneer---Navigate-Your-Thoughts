@@ -43,11 +43,7 @@ function SideBarLayout() {
     }`;
 
   return (
-    <div
-      className={
-        "border-r-surface grid h-screen grid-rows-[auto_auto_1fr] gap-2 border-r py-4 pl-6"
-      }
-    >
+    <div className="border-r-surface grid h-screen grid-rows-[auto_auto_1fr] gap-2 border-r py-4 pl-6">
       <img src={logo} className="size-11" alt="Logo of Notioneer" />
 
       <div className="border-b-surface grid grid-rows-2 gap-1 border-b py-2 pr-6">
