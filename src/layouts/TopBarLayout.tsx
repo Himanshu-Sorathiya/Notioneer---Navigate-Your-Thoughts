@@ -1,47 +1,12 @@
-import { useDispatch, useSelector } from "react-redux";
-
-import { setSearchFilter } from "../store/filterSlice.ts";
-import type { RootState } from "../store/store.ts";
-
-import Icon from "../components/Icon.tsx";
+import TopBarHeader from "../components/topbar/TopBarHeader.tsx";
+import TopBarSearchFilter from "../components/topbar/TopBarSearchFilter.tsx";
 
 function TopBarLayout() {
-  const isArchivedView = useSelector(
-    (state: RootState) => state.filter.isArchivedView,
-  );
-  const selectedTag = useSelector(
-    (state: RootState) => state.filter.selectedTag,
-  );
-  const searchFilter = useSelector(
-    (state: RootState) => state.filter.searchFilter,
-  );
-
-  const dispatch = useDispatch();
-
-  const header = selectedTag
-    ? `${isArchivedView === false ? "All" : "Archived"} Notes tagged: ${selectedTag}`
-    : isArchivedView === false
-      ? "All Notes"
-      : "Archived Notes";
-
   return (
     <div className="border-b-surface col-span-3 flex items-center justify-between border-b px-4 py-4">
-      <span className="max-w-md text-2xl font-bold break-all">{header}</span>
+      <TopBarHeader />
 
-      <div className="relative min-w-sm">
-        <input
-          type="text"
-          placeholder="Search by Title, Tags and Content..."
-          className={`bg-base peer focus:border-strong focus:text-strong w-full rounded-md border border-gray-500 py-3 pr-4 pl-12 text-sm text-gray-400 transition-all duration-150 outline-none ${searchFilter ? "text-strong" : ""} `}
-          value={searchFilter}
-          onChange={(e) => dispatch(setSearchFilter(e.target.value))}
-        />
-
-        <Icon
-          id="icon-search"
-          className={`peer-focus:text-strong absolute top-0 bottom-0 left-3 my-auto h-6 w-6 text-gray-400 ${searchFilter ? "text-strong" : ""}`}
-        ></Icon>
-      </div>
+      <TopBarSearchFilter />
     </div>
   );
 }

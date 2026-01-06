@@ -6,10 +6,12 @@ import { notes } from "../constants/data.ts";
 
 interface NoteState {
   notes: Note[];
+  currentNote: Note | null;
 }
 
 const initialState: NoteState = {
   notes: notes,
+  currentNote: null,
 };
 
 const notesSlice = createSlice({
@@ -43,9 +45,18 @@ const notesSlice = createSlice({
         }
       });
     },
+
+    setCurrentNote(state, action) {
+      state.currentNote = action.payload;
+    },
   },
 });
 
-export const { addNote, updateNote, deleteNote, toggleArchive } =
-  notesSlice.actions;
+export const {
+  addNote,
+  updateNote,
+  deleteNote,
+  toggleArchive,
+  setCurrentNote,
+} = notesSlice.actions;
 export default notesSlice.reducer;
