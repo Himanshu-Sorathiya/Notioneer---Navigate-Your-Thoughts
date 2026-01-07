@@ -26,7 +26,7 @@ function NotesListNewNoteButton() {
           title: "",
           tags: [],
           content: "",
-          lastEdited: new Date().toISOString(),
+          lastEdited: "",
           isArchived: false,
         };
         dispatch(setCurrentNote(newNote));

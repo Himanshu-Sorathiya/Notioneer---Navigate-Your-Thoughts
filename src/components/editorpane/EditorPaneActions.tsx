@@ -1,12 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 
-import { addNote, setCurrentNote } from "../../store/notesSlice.ts";
+import { addNote, setCurrentNote, updateNote } from "../../store/notesSlice.ts";
 import type { RootState } from "../../store/store.ts";
 import { setMode, setSelectedNote } from "../../store/uiSlice.ts";
 
 import EditorPaneButton from "./EditorPaneButton.tsx";
 
 function EditorPaneActions() {
+  const notes = useSelector((state: RootState) => state.notes.notes);
+
   const currentNote = useSelector(
     (state: RootState) => state.notes.currentNote,
   );
@@ -19,9 +21,17 @@ function EditorPaneActions() {
         onClick={() => {
           if (!currentNote) return;
 
-          dispatch(
-            addNote({ ...currentNote, lastEdited: new Date().toISOString() }),
-          );
+          const noteToSave = {
+            ...currentNote,
+            lastEdited: new Date().toISOString(),
+          };
+
+          if (notes.some((n) => n.id === currentNote.id)) {
+            dispatch(updateNote(noteToSave));
+          } else {
+            dispatch(addNote(noteToSave));
+          }
+
           dispatch(setSelectedNote(currentNote.id));
           dispatch(setMode("read"));
           dispatch(setCurrentNote(null));

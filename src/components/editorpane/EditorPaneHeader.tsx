@@ -44,6 +44,18 @@ function EditorPaneHeader() {
           placeholder="Enter tags, comma separated (e.g., Work, Ideas)"
         ></input>
       </div>
+
+      {currentNote?.lastEdited && (
+        <div className="grid grid-cols-[1fr_4fr] gap-2">
+          <div className="flex items-center gap-1.5">
+            <Icon id="icon-clock" className="size-5"></Icon>
+
+            <span className="text-gray-300">Last Edited</span>
+          </div>
+
+          <span className="font-semibold">{currentNote.lastEdited}</span>
+        </div>
+      )}
     </div>
   );
 }
