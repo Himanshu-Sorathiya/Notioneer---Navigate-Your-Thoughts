@@ -1,14 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 
-import { setCurrentNote } from "../../store/notesSlice.ts";
+import { setDraftNote } from "../../store/notesSlice.ts";
 import type { RootState } from "../../store/store.ts";
+import { setIsDirty } from "../../store/uiSlice.ts";
 
 import Icon from "../Icon.tsx";
 
 function EditorPaneHeader() {
-  const currentNote = useSelector(
-    (state: RootState) => state.notes.currentNote,
-  );
+  const draftNote = useSelector((state: RootState) => state.notes.draftNote);
 
   const dispatch = useDispatch();
 
@@ -16,10 +15,12 @@ function EditorPaneHeader() {
     <div className="border-b-surface flex flex-col gap-3 border-b pb-3">
       <input
         className="focus:outline-strong -m-1.5 rounded-sm p-1.5 text-2xl font-bold transition-all duration-150 focus:outline-1"
-        value={currentNote?.title || ""}
-        onChange={(e) =>
-          dispatch(setCurrentNote({ ...currentNote, title: e.target.value }))
-        }
+        value={draftNote?.title || ""}
+        onChange={(e) => {
+          dispatch(setDraftNote({ ...draftNote, title: e.target.value }));
+
+          dispatch(setIsDirty(true));
+        }}
         placeholder="Enter note title here"
       ></input>
 
@@ -32,20 +33,22 @@ function EditorPaneHeader() {
 
         <input
           className="focus:outline-strong -m-1.5 rounded-sm p-1.5 font-semibold transition-all duration-150 focus:outline-1"
-          value={currentNote?.tags?.join(", ") || ""}
-          onChange={(e) =>
+          value={draftNote?.tags?.join(", ") || ""}
+          onChange={(e) => {
             dispatch(
-              setCurrentNote({
-                ...currentNote,
+              setDraftNote({
+                ...draftNote,
                 tags: e.target.value.split(", "),
               }),
-            )
-          }
+            );
+
+            dispatch(setIsDirty(true));
+          }}
           placeholder="Enter tags, comma separated (e.g., Work, Ideas)"
         ></input>
       </div>
 
-      {currentNote?.lastEdited && (
+      {draftNote?.lastEdited && (
         <div className="grid grid-cols-[1fr_4fr] gap-2">
           <div className="flex items-center gap-1.5">
             <Icon id="icon-clock" className="size-5"></Icon>
@@ -53,7 +56,7 @@ function EditorPaneHeader() {
             <span className="text-gray-300">Last Edited</span>
           </div>
 
-          <span className="font-semibold">{currentNote.lastEdited}</span>
+          <span className="font-semibold">{draftNote.lastEdited}</span>
         </div>
       )}
     </div>

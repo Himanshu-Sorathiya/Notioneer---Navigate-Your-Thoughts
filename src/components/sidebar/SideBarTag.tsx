@@ -1,23 +1,22 @@
-import { useDispatch, useSelector } from "react-redux";
-
 import { setSelectedTag } from "../../store/filterSlice.ts";
-import type { RootState } from "../../store/store.ts";
 
 import Icon from "../Icon.tsx";
 
-function SideBarTag({ tag }: { tag: string }) {
-  const selectedTag = useSelector(
-    (state: RootState) => state.filter.selectedTag,
-  );
-
-  const mode = useSelector((state: RootState) => state.ui.mode);
-
-  const dispatch = useDispatch();
-
+function SideBarTag({
+  tag,
+  selectedTag,
+  isDirty,
+  dispatch,
+}: {
+  tag: string;
+  selectedTag: string;
+  isDirty: boolean;
+  dispatch: any;
+}) {
   return (
     <button
       className={`hover:bg-focus flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 break-all transition-all duration-150 disabled:cursor-not-allowed ${selectedTag === tag ? "bg-focus text-main" : ""}`}
-      disabled={mode === "edit"}
+      disabled={isDirty}
       onClick={() => {
         if (selectedTag === tag) {
           dispatch(setSelectedTag(""));

@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 
-import { toggleArchive } from "../../store/notesSlice.ts";
+import { setSelectedNote, toggleArchive } from "../../store/notesSlice.ts";
+import { incrementEditorResetKey } from "../../store/uiSlice.ts";
 
 import Icon from "../Icon.tsx";
 
@@ -12,7 +13,13 @@ function ActionPanelToggleButton({ note }: { note: Note }) {
   return (
     <button
       className="hover:text-main flex w-full cursor-pointer items-center gap-2 rounded-lg border border-gray-500 px-4 py-2 text-center text-gray-300 transition-all duration-150"
-      onClick={() => dispatch(toggleArchive(note.id))}
+      onClick={() => {
+        dispatch(toggleArchive(note.id));
+
+        dispatch(setSelectedNote(null));
+
+        dispatch(incrementEditorResetKey());
+      }}
     >
       <Icon
         id={`${note?.isArchived === false ? "icon-archive-notes" : "icon-unarchive-notes"}`}

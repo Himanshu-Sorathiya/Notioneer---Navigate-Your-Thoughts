@@ -2,8 +2,9 @@ import { useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
+import { setDraftNote, setSelectedNote } from "../store/notesSlice.ts";
 import type { RootState } from "../store/store.ts";
-import { setSelectedNote } from "../store/uiSlice.ts";
+import { incrementEditorResetKey } from "../store/uiSlice.ts";
 
 import NotesListNewNoteButton from "../components/noteslist/NotesListNewNoteButton.tsx";
 import NotesListNote from "../components/noteslist/NotesListNote.tsx";
@@ -21,8 +22,12 @@ function NotesListLayout() {
     (state: RootState) => state.filter.searchFilter,
   );
 
-  const selectedNote = useSelector((state: RootState) => state.ui.selectedNote);
-  const mode = useSelector((state: RootState) => state.ui.mode);
+  const selectedNote = useSelector(
+    (state: RootState) => state.notes.selectedNote,
+  );
+  const isCreatingNewNote = useSelector(
+    (state: RootState) => state.ui.isCreatingNewNote,
+  );
 
   const dispatch = useDispatch();
 
@@ -68,18 +73,24 @@ function NotesListLayout() {
     : filteredNotes;
 
   useEffect(() => {
-    if (mode === "edit") return;
+    if (isCreatingNewNote === true) return;
 
     if (orderedNotes.length === 0) {
       dispatch(setSelectedNote(null));
+      dispatch(setDraftNote(null));
+
+      dispatch(incrementEditorResetKey());
 
       return;
     }
 
-    const exists = orderedNotes.some((n) => n.id === selectedNote);
+    const exists = orderedNotes.some((n) => n.id === selectedNote?.id);
 
     if (!exists) {
-      dispatch(setSelectedNote(orderedNotes[0].id));
+      dispatch(setSelectedNote(orderedNotes[0]));
+      dispatch(setDraftNote(orderedNotes[0]));
+
+      dispatch(incrementEditorResetKey());
     }
   }, [orderedNotes, selectedNote]);
 

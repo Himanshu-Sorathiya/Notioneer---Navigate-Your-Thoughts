@@ -1,23 +1,33 @@
 import { useDispatch, useSelector } from "react-redux";
 
+import { setDraftNote, setSelectedNote } from "../../store/notesSlice.ts";
 import type { RootState } from "../../store/store.ts";
-import { setMode, setSelectedNote } from "../../store/uiSlice.ts";
+import {
+  incrementEditorResetKey,
+  setIsCreatingNewNote,
+  setIsDirty,
+} from "../../store/uiSlice.ts";
 
 import type { Note } from "../../types/note.ts";
 
 function NotesListNote({ note }: { note: Note }) {
-  const selectedNote = useSelector((state: RootState) => state.ui.selectedNote);
-  const mode = useSelector((state: RootState) => state.ui.mode);
+  const selectedNote = useSelector(
+    (state: RootState) => state.notes.selectedNote,
+  );
 
   const dispatch = useDispatch();
 
   return (
     <div
-      className={`border-b-focus border-b pb-0.5 ${note.id === selectedNote ? "bg-focus" : ""}`}
+      className={`border-b-focus border-b pb-0.5 ${note.id === selectedNote?.id ? "bg-focus" : ""}`}
       onClick={() => {
-        if (mode === "edit") dispatch(setMode("read"));
+        dispatch(setIsCreatingNewNote(false));
+        dispatch(setIsDirty(false));
 
-        dispatch(setSelectedNote(note.id));
+        dispatch(setDraftNote(note));
+        dispatch(setSelectedNote(note));
+
+        dispatch(incrementEditorResetKey());
       }}
     >
       <div

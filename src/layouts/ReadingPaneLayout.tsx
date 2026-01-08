@@ -8,9 +8,11 @@ import ReadingPaneHeader from "../components/readingpane/ReadingPaneHeader.tsx";
 function ReadingPaneLayout() {
   const notes = useSelector((state: RootState) => state.notes.notes);
 
-  const selectedNote = useSelector((state: RootState) => state.ui.selectedNote);
+  const selectedNote = useSelector(
+    (state: RootState) => state.notes.selectedNote,
+  );
 
-  const note = notes.find((note) => note.id === selectedNote);
+  const note = notes.find((note) => note.id === selectedNote?.id);
 
   if (!note)
     return (

@@ -1,28 +1,45 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 interface uiState {
-  selectedNote: null | number;
   mode: "read" | "edit";
+  isCreatingNewNote: boolean;
+  isDirty: boolean;
+  editorResetKey: number;
 }
 
 const initialState: uiState = {
-  selectedNote: null,
-  mode: "read",
+  mode: "edit",
+  isCreatingNewNote: false,
+  isDirty: false,
+  editorResetKey: 0,
 };
 
 const uiSlice = createSlice({
   name: "ui",
   initialState,
   reducers: {
-    setSelectedNote(state, action) {
-      state.selectedNote = action.payload;
-    },
-
     setMode(state, action) {
       state.mode = action.payload;
+    },
+
+    setIsCreatingNewNote(state, action) {
+      state.isCreatingNewNote = action.payload;
+    },
+
+    setIsDirty(state, action) {
+      state.isDirty = action.payload;
+    },
+
+    incrementEditorResetKey(state) {
+      state.editorResetKey += 1;
     },
   },
 });
 
-export const { setSelectedNote, setMode } = uiSlice.actions;
+export const {
+  setMode,
+  setIsCreatingNewNote,
+  setIsDirty,
+  incrementEditorResetKey,
+} = uiSlice.actions;
 export default uiSlice.reducer;

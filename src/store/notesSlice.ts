@@ -6,7 +6,8 @@ import { notes } from "../constants/data.ts";
 
 interface NoteState {
   notes: Note[];
-  currentNote: Note | null;
+  selectedNote: Note | null;
+  draftNote: Note | null;
 }
 
 const initialState: NoteState = {
@@ -14,7 +15,8 @@ const initialState: NoteState = {
     (a, b) =>
       new Date(b.lastEdited).getTime() - new Date(a.lastEdited).getTime(),
   ),
-  currentNote: null,
+  selectedNote: null,
+  draftNote: null,
 };
 
 const notesSlice = createSlice({
@@ -59,8 +61,12 @@ const notesSlice = createSlice({
       });
     },
 
-    setCurrentNote(state, action) {
-      state.currentNote = action.payload;
+    setSelectedNote(state, action) {
+      state.selectedNote = action.payload;
+    },
+
+    setDraftNote(state, action) {
+      state.draftNote = action.payload;
     },
   },
 });
@@ -70,6 +76,7 @@ export const {
   updateNote,
   deleteNote,
   toggleArchive,
-  setCurrentNote,
+  setSelectedNote,
+  setDraftNote,
 } = notesSlice.actions;
 export default notesSlice.reducer;
