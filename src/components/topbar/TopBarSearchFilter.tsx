@@ -1,18 +1,19 @@
-import { useDispatch, useSelector } from "react-redux";
+import {
+  selectSearchFilter,
+  setSearchFilter,
+} from "../../store/filterSlice.ts";
 
-import { setSearchFilter } from "../../store/filterSlice.ts";
-import type { RootState } from "../../store/store.ts";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks.ts";
 
+import { selectIsDirty } from "../../store/uiSlice.ts";
 import Icon from "../Icon.tsx";
 
 function TopBarSearchFilter() {
-  const searchFilter = useSelector(
-    (state: RootState) => state.filter.searchFilter,
-  );
+  const searchFilter = useAppSelector(selectSearchFilter);
 
-  const isDirty = useSelector((state: RootState) => state.ui.isDirty);
+  const isDirty = useAppSelector(selectIsDirty);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <div className="relative min-w-sm">

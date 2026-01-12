@@ -1,26 +1,19 @@
-import { useSelector } from "react-redux";
-
-import type { RootState } from "../store/store.ts";
+import { useAppSelector } from "../hooks/hooks.ts";
 
 import ActionPanelDeleteButton from "../components/actionpanel/ActionPanelDeleteButton.tsx";
 import ActionPanelToggleButton from "../components/actionpanel/ActionPanelToggleButton.tsx";
+import { selectSelectedNoteId } from "../store/notesSlice.ts";
 
 function ActionPanelLayout() {
-  const notes = useSelector((state: RootState) => state.notes.notes);
+  const selectedNoteId = useAppSelector(selectSelectedNoteId);
 
-  const selectedNote = useSelector(
-    (state: RootState) => state.notes.selectedNote,
-  );
-
-  const note = notes.find((note) => note.id === selectedNote?.id);
-
-  if (!note) return null;
+  if (!selectedNoteId) return null;
 
   return (
     <div className="flex flex-col gap-3 px-3 py-4">
-      <ActionPanelToggleButton note={note} />
+      <ActionPanelToggleButton />
 
-      <ActionPanelDeleteButton note={note} />
+      <ActionPanelDeleteButton />
     </div>
   );
 }

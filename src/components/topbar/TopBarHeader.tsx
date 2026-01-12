@@ -1,24 +1,21 @@
-import { useSelector } from "react-redux";
+import {
+  selectIsArchivedView,
+  selectSelectedTag,
+} from "../../store/filterSlice.ts";
 
-import type { RootState } from "../../store/store.ts";
+import { useAppSelector } from "../../hooks/hooks.ts";
 
 function TopBarHeader() {
-  const is_archivedView = useSelector(
-    (state: RootState) => state.filter.is_archivedView,
-  );
-  const selectedTag = useSelector(
-    (state: RootState) => state.filter.selectedTag,
-  );
+  const isArchivedView = useAppSelector(selectIsArchivedView);
+  const selectedTag = useAppSelector(selectSelectedTag);
+
+  const viewType = isArchivedView ? "Archived" : "All";
 
   const header = selectedTag
-    ? `${is_archivedView === false ? "All" : "Archived"} Notes tagged: ${selectedTag}`
-    : is_archivedView === false
-      ? "All Notes"
-      : "Archived Notes";
+    ? `${viewType} Notes tagged: ${selectedTag}`
+    : `${viewType} Notes`;
 
-  return (
-    <span className="max-w-md text-2xl font-bold break-all">{header}</span>
-  );
+  return <h1 className="max-w-md text-2xl font-bold break-all">{header}</h1>;
 }
 
 export default TopBarHeader;

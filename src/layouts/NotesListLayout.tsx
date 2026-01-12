@@ -1,90 +1,44 @@
 import { useEffect } from "react";
 
-import { useDispatch, useSelector } from "react-redux";
+import {
+  selectFilteredAndOrderedNotes,
+  selectSelectedNoteId,
+  setDraftNote,
+  setSelectedNote,
+} from "../store/notesSlice.ts";
+import {
+  incrementEditorResetKey,
+  selectIsCreatingNewNote,
+} from "../store/uiSlice.ts";
 
-import { setDraftNote, setSelectedNote } from "../store/notesSlice.ts";
-import type { RootState } from "../store/store.ts";
-import { incrementEditorResetKey } from "../store/uiSlice.ts";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks.ts";
 
 import NotesListNewNoteButton from "../components/noteslist/NotesListNewNoteButton.tsx";
 import NotesListNote from "../components/noteslist/NotesListNote.tsx";
 
 function NotesListLayout() {
-  const notes = useSelector((state: RootState) => state.notes.notes);
+  const orderedNotes = useAppSelector(selectFilteredAndOrderedNotes);
+  const selectedNoteId = useAppSelector(selectSelectedNoteId);
 
-  const is_archivedView = useSelector(
-    (state: RootState) => state.filter.is_archivedView,
-  );
-  const selectedTag = useSelector(
-    (state: RootState) => state.filter.selectedTag,
-  );
-  const searchFilter = useSelector(
-    (state: RootState) => state.filter.searchFilter,
-  );
+  const isCreatingNewNote = useAppSelector(selectIsCreatingNewNote);
 
-  const selectedNote = useSelector(
-    (state: RootState) => state.notes.selectedNote,
-  );
-  const isCreatingNewNote = useSelector(
-    (state: RootState) => state.ui.isCreatingNewNote,
-  );
-
-  const dispatch = useDispatch();
-
-  const filteredNotes = notes
-    .filter((note) => note.is_archived === is_archivedView)
-    .filter(
-      (note) =>
-        !selectedTag || note.tags.some((tag) => tag.includes(selectedTag)),
-    )
-    .filter((note) => {
-      if (!searchFilter) return true;
-
-      const query = searchFilter.toLowerCase();
-
-      return (
-        note.title.toLowerCase().includes(query) ||
-        note.tags.some((tag) => tag.toLowerCase().includes(query)) ||
-        note.content.toLowerCase().includes(query)
-      );
-    });
-
-  const orderedNotes = searchFilter
-    ? [
-        ...filteredNotes.filter((n) =>
-          n.title.toLowerCase().includes(searchFilter.toLowerCase()),
-        ),
-        ...filteredNotes.filter(
-          (n) =>
-            !n.title.toLowerCase().includes(searchFilter.toLowerCase()) &&
-            n.tags.some((tag) =>
-              tag.toLowerCase().includes(searchFilter.toLowerCase()),
-            ),
-        ),
-        ...filteredNotes.filter(
-          (n) =>
-            !n.title.toLowerCase().includes(searchFilter.toLowerCase()) &&
-            !n.tags.some((tag) =>
-              tag.toLowerCase().includes(searchFilter.toLowerCase()),
-            ) &&
-            n.content.toLowerCase().includes(searchFilter.toLowerCase()),
-        ),
-      ]
-    : filteredNotes;
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (isCreatingNewNote === true) return;
 
     if (orderedNotes.length === 0) {
-      dispatch(setSelectedNote(null));
-      dispatch(setDraftNote(null));
+      if (selectedNoteId) {
+        dispatch(setSelectedNote(null));
+        dispatch(setDraftNote(null));
 
-      dispatch(incrementEditorResetKey());
+        dispatch(incrementEditorResetKey());
+      }
 
       return;
     }
 
-    const exists = orderedNotes.some((n) => n.id === selectedNote?.id);
+    const exists = orderedNotes.some((n) => n.id === selectedNoteId);
 
     if (!exists) {
       dispatch(setSelectedNote(orderedNotes[0]));
@@ -92,7 +46,7 @@ function NotesListLayout() {
 
       dispatch(incrementEditorResetKey());
     }
-  }, [orderedNotes, selectedNote]);
+  }, [orderedNotes.length, selectedNoteId, isCreatingNewNote, dispatch]);
 
   return (
     <div className="thin-scrollbar flex flex-col gap-1 overflow-y-auto px-3 py-4">

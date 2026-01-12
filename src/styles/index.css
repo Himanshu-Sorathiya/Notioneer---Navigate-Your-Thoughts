@@ -41,6 +41,14 @@
   .thin-scrollbar {
     @apply scrollbar-thin scrollbar-thumb-surface scrollbar-track-focus scrollbar-thumb-rounded-full scrollbar-track-rounded-full;
   }
+
+  .placeholder-logic.is-empty:before {
+    @apply block;
+  }
+
+  .placeholder-logic:not(.is-empty):before {
+    @apply hidden;
+  }
 }
 
 @plugin "tailwind-scrollbar" {

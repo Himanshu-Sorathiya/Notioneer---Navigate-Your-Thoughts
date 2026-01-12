@@ -1,33 +1,66 @@
-import { useDispatch, useSelector } from "react-redux";
-
 import {
   addNote,
+  selectDraftNote,
+  selectSelectedNote,
   setDraftNote,
   setSelectedNote,
   updateNote,
 } from "../../store/notesSlice.ts";
-import type { RootState } from "../../store/store.ts";
 import {
   incrementEditorResetKey,
+  selectIsCreatingNewNote,
+  selectIsDirty,
   setIsCreatingNewNote,
   setIsDirty,
 } from "../../store/uiSlice.ts";
+
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks.ts";
 
 import EditorPaneButton from "./EditorPaneButton.tsx";
 
 import type { Note } from "../../types/note.ts";
 
 function EditorPaneActions() {
-  const notes = useSelector((state: RootState) => state.notes.notes);
+  const selectedNote = useAppSelector(selectSelectedNote);
+  const draftNote = useAppSelector(selectDraftNote);
 
-  const selectedNote = useSelector(
-    (state: RootState) => state.notes.selectedNote,
-  );
-  const draftNote = useSelector((state: RootState) => state.notes.draftNote);
+  const isCreatingNewNote = useAppSelector(selectIsCreatingNewNote);
+  const isDirty = useAppSelector(selectIsDirty);
 
-  const isDirty = useSelector((state: RootState) => state.ui.isDirty);
+  const dispatch = useAppDispatch();
 
-  const dispatch = useDispatch();
+  const handleSave = () => {
+    if (!draftNote) return;
+
+    const noteToSave: Note = {
+      ...draftNote,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (isCreatingNewNote) {
+      dispatch(addNote(noteToSave));
+    } else {
+      dispatch(updateNote(noteToSave));
+    }
+
+    dispatch(setIsCreatingNewNote(false));
+    dispatch(setIsDirty(false));
+
+    dispatch(setSelectedNote(noteToSave));
+    dispatch(setDraftNote(noteToSave));
+
+    dispatch(incrementEditorResetKey());
+  };
+
+  const handleCancel = () => {
+    dispatch(setIsCreatingNewNote(false));
+    dispatch(setIsDirty(false));
+
+    dispatch(setSelectedNote(selectedNote));
+    dispatch(setDraftNote(selectedNote));
+
+    dispatch(incrementEditorResetKey());
+  };
 
   return (
     <div className="border-t-surface flex justify-end gap-2 border-t pt-3">
@@ -35,43 +68,14 @@ function EditorPaneActions() {
         label="Save"
         className="bg-main hover:bg-[#2547d0]"
         disabled={!isDirty}
-        onClick={() => {
-          if (!draftNote) return;
-
-          const noteToSave: Note = {
-            ...draftNote,
-            updated_at: new Date().toISOString(),
-          };
-
-          if (notes.some((n) => n.id === draftNote.id)) {
-            dispatch(updateNote(noteToSave));
-          } else {
-            dispatch(addNote(noteToSave));
-          }
-
-          dispatch(setIsCreatingNewNote(false));
-          dispatch(setIsDirty(false));
-
-          dispatch(setSelectedNote(noteToSave));
-          dispatch(setDraftNote(noteToSave));
-
-          dispatch(incrementEditorResetKey());
-        }}
+        onClick={handleSave}
       />
 
       <EditorPaneButton
         label="Cancel"
         className="bg-muted hover:bg-focus"
         disabled={!isDirty}
-        onClick={() => {
-          dispatch(setIsCreatingNewNote(false));
-          dispatch(setIsDirty(false));
-
-          dispatch(setSelectedNote(selectedNote));
-          dispatch(setDraftNote(selectedNote));
-
-          dispatch(incrementEditorResetKey());
-        }}
+        onClick={handleCancel}
       />
     </div>
   );

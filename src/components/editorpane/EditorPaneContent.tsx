@@ -1,49 +1,46 @@
 import { useEffect, useRef } from "react";
 
-import { useDispatch, useSelector } from "react-redux";
+import {
+  selectDraftNoteContent,
+  updateDraftField,
+} from "../../store/notesSlice.ts";
+import { selectEditorResetKey, setIsDirty } from "../../store/uiSlice.ts";
 
-import { setDraftNote } from "../../store/notesSlice.ts";
-import type { RootState } from "../../store/store.ts";
-import { setIsDirty } from "../../store/uiSlice.ts";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks.ts";
 
 function EditorPaneContent() {
-  const draftNote = useSelector((state: RootState) => state.notes.draftNote);
+  const draftNoteContent = useAppSelector(selectDraftNoteContent);
 
-  const editorResetKey = useSelector(
-    (state: RootState) => state.ui.editorResetKey,
-  );
+  const editorResetKey = useAppSelector(selectEditorResetKey);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (ref.current && draftNote) {
-      ref.current.textContent = draftNote.content;
+    if (ref.current) {
+      ref.current.textContent = draftNoteContent;
     }
   }, [editorResetKey]);
+
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    const value = e.currentTarget.innerText || "";
+
+    const cleanValue = value.trim() === "" ? "" : value;
+
+    dispatch(updateDraftField({ field: "content", value: cleanValue }));
+
+    dispatch(setIsDirty(true));
+  };
 
   return (
     <div
       ref={ref}
-      className={`text-strong thin-scrollbar relative -mx-5 flex-1 overflow-y-auto rounded-sm px-5 whitespace-pre-wrap ${
-        !draftNote?.content
-          ? "before:pointer-events-none before:absolute before:text-gray-400 before:content-[attr(data-placeholder)] before:select-none"
-          : ""
-      }`}
+      className={`text-strong thin-scrollbar placeholder-logic relative -mx-5 flex-1 overflow-y-auto rounded-sm px-5 whitespace-pre-wrap outline-none before:pointer-events-none before:absolute before:text-gray-400 before:content-[attr(data-placeholder)] before:select-none ${!draftNoteContent ? "is-empty" : ""}`}
       data-placeholder="Start writing your note here..."
       contentEditable={true}
       suppressContentEditableWarning={true}
-      onInput={(e) => {
-        dispatch(
-          setDraftNote({
-            ...draftNote,
-            content: e.currentTarget.innerText || "",
-          }),
-        );
-
-        dispatch(setIsDirty(true));
-      }}
+      onInput={handleInput}
     ></div>
   );
 }
