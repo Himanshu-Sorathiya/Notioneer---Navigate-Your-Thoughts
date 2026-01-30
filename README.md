@@ -6,17 +6,19 @@ Notioneer is a powerful yet minimal note-taking app designed to help users captu
 
 ---
 
-### 🎯 Features
-- **📝 Notes (CRUD)** – Create, read, update, and delete notes.
-- **📦 Archive Notes** – Archive and restore notes anytime.
-- **⭐ Favorites** – Mark important notes for quick access.
-- **🏷️ Tags** – Organize and filter notes by tags.
-- **🔍 Powerful Search** – Search by title, content, and tags.
-- **✍️ Plain & Markdown Notes** – Choose between normal text or Markdown.
-- **👀 Live Markdown Preview** – Preview Markdown notes in real time.
-- **🎨 Customization** – App theme, font theme, and note-level settings.
-- **⌨️ Keyboard Navigation** – Navigate and use the app fully via keyboard.
-- **📊 Note Utilities** – Word count, character count, sorting, and more.
+## 🎯 Features
+
+### ✅ Completed (Core Engine)
+- **⚡ Advanced Drafting System** – Decoupled Editor state (Redux) from Server state (RTK Query). Supports "Dirty State" detection and manual save/revert workflows.
+- **🔄 Intelligent Sync** – Atomic "ID Handover" logic that transitions from client-side temporary IDs to permanent Database IDs without UI flickering.
+- **📝 High-Performance Editor** – Custom `contentEditable` implementation using React Refs and Reset Keys to maintain cursor position while syncing with global state.
+- **🧹 Smart Selection Logic** – Automated layout engine that handles selection transitions during initial boot, note creation, and deletion.
+
+### 🚧 Future Roadmap (Conceptualized)
+- **📦 Archive & Favorites** – Logic for moving notes between status states.
+- **🏷️ Tag System** – Global tag extraction and sidebar filtering.
+- **🔍 Markdown Support** – Real-time preview using Markdown parsers.
+- **📊 Utilities** – Word count, character count, and advanced sorting.
 
 ---
 
