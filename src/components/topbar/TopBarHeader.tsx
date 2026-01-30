@@ -1,13 +1,10 @@
-import {
-  selectIsArchivedView,
-  selectSelectedTag,
-} from "../../store/features/filter/filterSelectors.ts";
+import { useStore } from "@tanstack/react-store";
 
-import { useAppSelector } from "../../hooks/hooks.ts";
+import { filterStore } from "../../store/filter.ts";
 
 function TopBarHeader() {
-  const isArchivedView = useAppSelector(selectIsArchivedView);
-  const selectedTag = useAppSelector(selectSelectedTag);
+  const isArchivedView = useStore(filterStore, (state) => state.isArchivedView);
+  const selectedTag = useStore(filterStore, (state) => state.selectedTag);
 
   const viewType = isArchivedView ? "Archived" : "All";
 

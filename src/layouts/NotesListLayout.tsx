@@ -1,15 +1,12 @@
 import { useEffect } from "react";
 
+import { useStore } from "@tanstack/react-store";
+
 import { selectFilteredAndOrderedNotes } from "../store/features/api/apiSelector.ts";
 import { useGetNotesQuery } from "../store/features/api/apiSlice.ts";
 
-import { selectSelectedNoteId } from "../store/features/notes/notesSelectors.ts";
-import {
-  setDraftNote,
-  setSelectedNote,
-} from "../store/features/notes/notesSlice.ts";
-import { selectIsCreatingNewNote } from "../store/features/ui/uiSelectors.ts";
-import { incrementEditorResetKey } from "../store/features/ui/uiSlice.ts";
+import { notesStore, setDraftNote, setSelectedNote } from "../store/notes.ts";
+import { incrementEditorResetKey, uiStore } from "../store/ui.ts";
 
 import { useAppDispatch, useAppSelector } from "../hooks/hooks.ts";
 
@@ -20,9 +17,15 @@ import NotesListNoteSkeleton from "../components/noteslist/NotesListNoteSkeleton
 function NotesListLayout() {
   const orderedNotes = useAppSelector(selectFilteredAndOrderedNotes);
 
-  const selectedNoteId = useAppSelector(selectSelectedNoteId);
+  const selectedNoteId = useStore(
+    notesStore,
+    (state) => state.selectedNote?.id,
+  );
 
-  const isCreatingNewNote = useAppSelector(selectIsCreatingNewNote);
+  const isCreatingNewNote = useStore(
+    uiStore,
+    (state) => state.isCreatingNewNote,
+  );
 
   const { isLoading, isFetching } = useGetNotesQuery();
 
@@ -34,10 +37,10 @@ function NotesListLayout() {
 
     if (orderedNotes.length === 0) {
       if (selectedNoteId) {
-        dispatch(setSelectedNote(null));
-        dispatch(setDraftNote(null));
+        setSelectedNote({ selectedNote: null });
+        setDraftNote({ draftNote: null });
 
-        dispatch(incrementEditorResetKey());
+        incrementEditorResetKey();
       }
 
       return;
@@ -48,9 +51,10 @@ function NotesListLayout() {
     if (!exists) {
       if (selectedNoteId) return;
 
-      dispatch(setSelectedNote(orderedNotes[0]));
-      dispatch(setDraftNote(orderedNotes[0]));
-      dispatch(incrementEditorResetKey());
+      setSelectedNote({ selectedNote: orderedNotes[0] });
+      setDraftNote({ draftNote: orderedNotes[0] });
+
+      incrementEditorResetKey();
     }
   }, [
     orderedNotes.length,

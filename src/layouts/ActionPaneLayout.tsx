@@ -1,12 +1,15 @@
-import { selectSelectedNoteId } from "../store/features/notes/notesSelectors.ts";
+import { useStore } from "@tanstack/react-store";
 
-import { useAppSelector } from "../hooks/hooks.ts";
+import { notesStore } from "../store/notes.ts";
 
 import ActionPanelDeleteButton from "../components/actionpanel/ActionPanelDeleteButton.tsx";
 import ActionPanelToggleButton from "../components/actionpanel/ActionPanelToggleButton.tsx";
 
 function ActionPanelLayout() {
-  const selectedNoteId = useAppSelector(selectSelectedNoteId);
+  const selectedNoteId = useStore(
+    notesStore,
+    (state) => state.selectedNote?.id,
+  );
 
   if (!selectedNoteId) return null;
 

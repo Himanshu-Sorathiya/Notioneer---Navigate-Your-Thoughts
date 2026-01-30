@@ -1,43 +1,38 @@
+import { useStore } from "@tanstack/react-store";
+
 import {
   useAddNoteMutation,
   useUpdateNoteMutation,
 } from "../../store/features/api/apiSlice.ts";
 
 import {
-  selectDraftNote,
-  selectSelectedNote,
-} from "../../store/features/notes/notesSelectors.ts";
-import {
-  setDraftNote,
-  setSelectedNote,
-} from "../../store/features/notes/notesSlice.ts";
-import {
-  selectIsCreatingNewNote,
-  selectIsDirty,
-} from "../../store/features/ui/uiSelectors.ts";
-import {
   incrementEditorResetKey,
   setIsCreatingNewNote,
   setIsDirty,
-} from "../../store/features/ui/uiSlice.ts";
-
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks.ts";
+  uiStore,
+} from "../../store/ui.ts";
 
 import EditorPaneButton from "./EditorPaneButton.tsx";
 
+import {
+  notesStore,
+  setDraftNote,
+  setSelectedNote,
+} from "../../store/notes.ts";
 import type { Note } from "../../types/note.ts";
 
 function EditorPaneActions() {
-  const selectedNote = useAppSelector(selectSelectedNote);
-  const draftNote = useAppSelector(selectDraftNote);
+  const selectedNote = useStore(notesStore, (state) => state.selectedNote);
+  const draftNote = useStore(notesStore, (state) => state.draftNote);
 
-  const isCreatingNewNote = useAppSelector(selectIsCreatingNewNote);
-  const isDirty = useAppSelector(selectIsDirty);
+  const isCreatingNewNote = useStore(
+    uiStore,
+    (state) => state.isCreatingNewNote,
+  );
+  const isDirty = useStore(uiStore, (state) => state.isDirty);
 
   const [addNote] = useAddNoteMutation();
   const [updateNote] = useUpdateNoteMutation();
-
-  const dispatch = useAppDispatch();
 
   const handleSave = async () => {
     if (!draftNote) return;
@@ -57,24 +52,22 @@ function EditorPaneActions() {
         savedNote = noteToSave;
       }
 
-      dispatch(setIsCreatingNewNote(false));
-      dispatch(setIsDirty(false));
+      setIsCreatingNewNote({ isCreatingNewNote: false });
+      setIsDirty({ isDirty: false });
+      incrementEditorResetKey();
 
-      dispatch(setSelectedNote(savedNote));
-      dispatch(setDraftNote(savedNote));
-
-      dispatch(incrementEditorResetKey());
+      setSelectedNote({ selectedNote: savedNote });
+      setDraftNote({ draftNote: savedNote });
     } catch (error) {}
   };
 
   const handleCancel = () => {
-    dispatch(setIsCreatingNewNote(false));
-    dispatch(setIsDirty(false));
+    setIsCreatingNewNote({ isCreatingNewNote: false });
+    setIsDirty({ isDirty: false });
+    incrementEditorResetKey();
 
-    dispatch(setSelectedNote(selectedNote));
-    dispatch(setDraftNote(selectedNote));
-
-    dispatch(incrementEditorResetKey());
+    setSelectedNote({ selectedNote: selectedNote });
+    setDraftNote({ draftNote: selectedNote });
   };
 
   return (

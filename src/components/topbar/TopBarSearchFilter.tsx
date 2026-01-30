@@ -1,17 +1,14 @@
-import { selectSearchFilter } from "../../store/features/filter/filterSelectors.ts";
-import { setSearchFilter } from "../../store/features/filter/filterSlice.ts";
-import { selectIsDirty } from "../../store/features/ui/uiSelectors.ts";
+import { useStore } from "@tanstack/react-store";
 
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks.ts";
+import { filterStore, setSearchFilter } from "../../store/filter.ts";
+import { uiStore } from "../../store/ui.ts";
 
 import Icon from "../Icon.tsx";
 
 function TopBarSearchFilter() {
-  const searchFilter = useAppSelector(selectSearchFilter);
+  const searchFilter = useStore(filterStore, (state) => state.searchFilter);
 
-  const isDirty = useAppSelector(selectIsDirty);
-
-  const dispatch = useAppDispatch();
+  const isDirty = useStore(uiStore, (state) => state.isDirty);
 
   return (
     <div className="relative min-w-sm">
@@ -21,7 +18,7 @@ function TopBarSearchFilter() {
         className={`bg-base peer focus:border-strong focus:text-strong w-full rounded-md border border-gray-500 py-3 pr-4 pl-12 text-sm text-gray-400 transition-all duration-150 outline-none disabled:cursor-not-allowed ${searchFilter ? "text-strong" : ""} `}
         disabled={isDirty}
         value={searchFilter}
-        onChange={(e) => dispatch(setSearchFilter(e.target.value))}
+        onChange={(e) => setSearchFilter({ searchFilter: e.target.value })}
       />
 
       <Icon

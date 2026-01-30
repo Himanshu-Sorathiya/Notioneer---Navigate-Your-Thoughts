@@ -1,25 +1,20 @@
+import { useStore } from "@tanstack/react-store";
+
 import { useUpdateNoteMutation } from "../../store/features/api/apiSlice.ts";
 
-import { selectSelectedNote } from "../../store/features/notes/notesSelectors.ts";
 import {
+  notesStore,
   setDraftNote,
   setSelectedNote,
-} from "../../store/features/notes/notesSlice.ts";
-import {
-  incrementEditorResetKey,
-  setIsDirty,
-} from "../../store/features/ui/uiSlice.ts";
-
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks.ts";
+} from "../../store/notes.ts";
+import { incrementEditorResetKey, setIsDirty } from "../../store/ui.ts";
 
 import Icon from "../Icon.tsx";
 
 function ActionPanelToggleButton() {
-  const selectedNote = useAppSelector(selectSelectedNote);
+  const selectedNote = useStore(notesStore, (state) => state.selectedNote);
 
   const [updateNote] = useUpdateNoteMutation();
-
-  const dispatch = useAppDispatch();
 
   const handleToggle = async () => {
     if (!selectedNote) return;
@@ -29,12 +24,11 @@ function ActionPanelToggleButton() {
       is_archived: !selectedNote.is_archived,
     }).unwrap();
 
-    dispatch(setSelectedNote(null));
-    dispatch(setDraftNote(null));
+    setSelectedNote({ selectedNote: null });
+    setDraftNote({ draftNote: null });
 
-    dispatch(setIsDirty(false));
-
-    dispatch(incrementEditorResetKey());
+    setIsDirty({ isDirty: false });
+    incrementEditorResetKey();
   };
 
   if (!selectedNote) return null;

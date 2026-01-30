@@ -1,12 +1,12 @@
-import { selectSelectedNote } from "../store/features/notes/notesSelectors.ts";
+import { useStore } from "@tanstack/react-store";
 
-import { useAppSelector } from "../hooks/hooks.ts";
+import { notesStore } from "../store/notes.ts";
 
 import ReadingPaneContent from "../components/readingpane/ReadingPaneContent.tsx";
 import ReadingPaneHeader from "../components/readingpane/ReadingPaneHeader.tsx";
 
 function ReadingPaneLayout() {
-  const selectedNote = useAppSelector(selectSelectedNote);
+  const selectedNote = useStore(notesStore, (state) => state.selectedNote);
 
   if (!selectedNote)
     return (

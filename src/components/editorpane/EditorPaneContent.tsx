@@ -1,24 +1,22 @@
 import { useEffect, useRef } from "react";
 
-import { selectDraftNoteContent } from "../../store/features/notes/notesSelectors.ts";
-import { updateDraftField } from "../../store/features/notes/notesSlice.ts";
-import { selectEditorResetKey } from "../../store/features/ui/uiSelectors.ts";
-import { setIsDirty } from "../../store/features/ui/uiSlice.ts";
+import { useStore } from "@tanstack/react-store";
 
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks.ts";
+import { notesStore, updateDraftField } from "../../store/notes.ts";
+import { setIsDirty, uiStore } from "../../store/ui.ts";
 
 function EditorPaneContent() {
-  const draftNoteContent = useAppSelector(selectDraftNoteContent);
-
-  const editorResetKey = useAppSelector(selectEditorResetKey);
-
-  const dispatch = useAppDispatch();
+  const draftNoteContent = useStore(
+    notesStore,
+    (state) => state.draftNote?.content,
+  );
+  const editorResetKey = useStore(uiStore, (state) => state.editorResetKey);
 
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (ref.current) {
-      ref.current.innerText = draftNoteContent;
+      ref.current.innerText = draftNoteContent || "";
     }
   }, [editorResetKey]);
 
@@ -27,9 +25,9 @@ function EditorPaneContent() {
 
     const cleanValue = value.trim() === "" ? "" : value;
 
-    dispatch(updateDraftField({ field: "content", value: cleanValue }));
+    updateDraftField({ field: "content", value: cleanValue });
 
-    dispatch(setIsDirty(true));
+    setIsDirty({ isDirty: true });
   };
 
   return (

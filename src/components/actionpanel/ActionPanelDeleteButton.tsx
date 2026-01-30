@@ -1,37 +1,34 @@
+import { useStore } from "@tanstack/react-store";
+
 import { useDeleteNoteMutation } from "../../store/features/api/apiSlice.ts";
 
-import { selectSelectedNoteId } from "../../store/features/notes/notesSelectors.ts";
 import {
+  notesStore,
   setDraftNote,
   setSelectedNote,
-} from "../../store/features/notes/notesSlice.ts";
-import {
-  incrementEditorResetKey,
-  setIsDirty,
-} from "../../store/features/ui/uiSlice.ts";
-
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks.ts";
+} from "../../store/notes.ts";
+import { incrementEditorResetKey, setIsDirty } from "../../store/ui.ts";
 
 import Icon from "../Icon.tsx";
 
 function ActionPanelButton() {
-  const selectedNoteId = useAppSelector(selectSelectedNoteId);
+  const selectedNoteId = useStore(
+    notesStore,
+    (state) => state.selectedNote?.id,
+  );
 
   const [deleteNote] = useDeleteNoteMutation();
-
-  const dispatch = useAppDispatch();
 
   const handleDelete = async () => {
     if (!selectedNoteId) return;
 
     await deleteNote(selectedNoteId).unwrap();
 
-    dispatch(setSelectedNote(null));
-    dispatch(setDraftNote(null));
+    setSelectedNote({ selectedNote: null });
+    setDraftNote({ draftNote: null });
 
-    dispatch(setIsDirty(false));
-
-    dispatch(incrementEditorResetKey());
+    setIsDirty({ isDirty: false });
+    incrementEditorResetKey();
   };
 
   if (!selectedNoteId) return null;

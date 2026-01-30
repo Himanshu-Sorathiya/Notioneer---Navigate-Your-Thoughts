@@ -1,19 +1,13 @@
-import {
-  resetFilters,
-  setArchivedView,
-} from "../../store/features/filter/filterSlice.ts";
-import {
-  setDraftNote,
-  setSelectedNote,
-} from "../../store/features/notes/notesSlice.ts";
-import { selectIsDirty } from "../../store/features/ui/uiSelectors.ts";
+import { useStore } from "@tanstack/react-store";
+
+import { resetFilters, setArchivedView } from "../../store/filter.ts";
+import { setDraftNote, setSelectedNote } from "../../store/notes.ts";
 import {
   incrementEditorResetKey,
   setIsCreatingNewNote,
   setIsDirty,
-} from "../../store/features/ui/uiSlice.ts";
-
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks.ts";
+  uiStore,
+} from "../../store/ui.ts";
 
 import Icon from "../Icon.tsx";
 
@@ -29,20 +23,18 @@ const createEmptyNote = (): Note => ({
 });
 
 function NotesListNewNoteButton() {
-  const isDirty = useAppSelector(selectIsDirty);
-
-  const dispatch = useAppDispatch();
+  const isDirty = useStore(uiStore, (state) => state.isDirty);
 
   function handleCreateNote() {
-    dispatch(setIsCreatingNewNote(true));
-    dispatch(setIsDirty(false));
-    dispatch(incrementEditorResetKey());
+    setIsCreatingNewNote({ isCreatingNewNote: true });
+    setIsDirty({ isDirty: false });
+    incrementEditorResetKey();
 
-    dispatch(setArchivedView(false));
-    dispatch(resetFilters());
+    setArchivedView({ archivedView: false });
+    resetFilters();
 
-    dispatch(setSelectedNote(null));
-    dispatch(setDraftNote(createEmptyNote()));
+    setSelectedNote({ selectedNote: null });
+    setDraftNote({ draftNote: createEmptyNote() });
   }
 
   return (

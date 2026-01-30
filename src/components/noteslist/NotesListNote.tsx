@@ -1,37 +1,35 @@
 import { memo } from "react";
 
-import { selectIsNoteSelected } from "../../store/features/notes/notesSelectors.ts";
+import { useStore } from "@tanstack/react-store";
+
 import {
+  notesStore,
   setDraftNote,
   setSelectedNote,
-} from "../../store/features/notes/notesSlice.ts";
+} from "../../store/notes.ts";
 import {
   incrementEditorResetKey,
   setIsCreatingNewNote,
   setIsDirty,
-} from "../../store/features/ui/uiSlice.ts";
-
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks.ts";
+} from "../../store/ui.ts";
 
 import type { Note } from "../../types/note.ts";
 
 const NotesListNote = memo(({ note }: { note: Note }) => {
-  const isNoteSelected = useAppSelector((state) =>
-    selectIsNoteSelected(state, note),
+  const isNoteSelected = useStore(
+    notesStore,
+    (state) => state.selectedNote?.id === note.id,
   );
-
-  const dispatch = useAppDispatch();
 
   const handleSelectNote = () => {
     if (isNoteSelected) return;
 
-    dispatch(setIsCreatingNewNote(false));
-    dispatch(setIsDirty(false));
+    setIsCreatingNewNote({ isCreatingNewNote: false });
+    setIsDirty({ isDirty: false });
+    incrementEditorResetKey();
 
-    dispatch(setDraftNote(note));
-    dispatch(setSelectedNote(note));
-
-    dispatch(incrementEditorResetKey());
+    setDraftNote({ draftNote: note });
+    setSelectedNote({ selectedNote: note });
   };
 
   return (

@@ -1,17 +1,16 @@
+import { useStore } from "@tanstack/react-store";
+
 import { selectTagsByArchiveStatus } from "../../store/features/api/apiSelector.ts";
 
 import {
-  selectIsArchivedView,
-  selectSelectedTag,
-} from "../../store/features/filter/filterSelectors.ts";
-import {
+  filterStore,
   resetFilters,
   setArchivedView,
   setSelectedTag,
-} from "../../store/features/filter/filterSlice.ts";
-import { selectIsDirty } from "../../store/features/ui/uiSelectors.ts";
+} from "../../store/filter.ts";
+import { uiStore } from "../../store/ui.ts";
 
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks.ts";
+import { useAppSelector } from "../../hooks/hooks.ts";
 
 import Icon from "../Icon.tsx";
 
@@ -24,32 +23,30 @@ function SideBarNotesButton({
   iconId: string;
   label: string;
 }) {
-  const isArchivedView = useAppSelector(selectIsArchivedView);
-  const selectedTag = useAppSelector(selectSelectedTag);
+  const isArchivedView = useStore(filterStore, (state) => state.isArchivedView);
+  const selectedTag = useStore(filterStore, (state) => state.selectedTag);
 
-  const isDirty = useAppSelector(selectIsDirty);
+  const isDirty = useStore(uiStore, (state) => state.isDirty);
 
   const targetViewTags = useAppSelector((state) =>
     selectTagsByArchiveStatus(state, archive),
   );
 
-  const dispatch = useAppDispatch();
-
   const isActiveView = isArchivedView === archive;
 
   function handleNotesViewChange() {
     if (isActiveView) {
-      dispatch(resetFilters());
+      resetFilters();
 
       return;
     }
 
     if (archive === true && isDirty === true) return;
 
-    dispatch(setArchivedView(archive));
+    setArchivedView({ archivedView: archive });
 
     if (selectedTag && !targetViewTags.includes(selectedTag)) {
-      dispatch(setSelectedTag(""));
+      setSelectedTag({ selectedTag: "" });
     }
   }
 

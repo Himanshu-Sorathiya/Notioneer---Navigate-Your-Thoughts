@@ -1,42 +1,42 @@
-import {
-  selectDraftNoteId,
-  selectDraftNoteTags,
-  selectDraftNoteTitle,
-  selectDraftNoteUpdatedAt,
-} from "../../store/features/notes/notesSelectors.ts";
-import { updateDraftField } from "../../store/features/notes/notesSlice.ts";
-import { selectIsCreatingNewNote } from "../../store/features/ui/uiSelectors.ts";
-import { setIsDirty } from "../../store/features/ui/uiSlice.ts";
+import { useStore } from "@tanstack/react-store";
 
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks.ts";
+import { notesStore, updateDraftField } from "../../store/notes.ts";
+import { setIsDirty, uiStore } from "../../store/ui.ts";
 
 import Icon from "../Icon.tsx";
 
 function EditorPaneHeader() {
-  const draftNoteId = useAppSelector(selectDraftNoteId);
-  const draftNoteTitle = useAppSelector(selectDraftNoteTitle);
-  const draftNoteTags = useAppSelector(selectDraftNoteTags);
-  const draftNoteUpdatedAt = useAppSelector(selectDraftNoteUpdatedAt);
+  const draftNoteId = useStore(notesStore, (state) => state.draftNote?.id);
+  const draftNoteTitle = useStore(
+    notesStore,
+    (state) => state.draftNote?.title,
+  );
+  const draftNoteTags = useStore(notesStore, (state) => state.draftNote?.tags);
+  const draftNoteUpdatedAt = useStore(
+    notesStore,
+    (state) => state.draftNote?.updated_at,
+  );
 
-  const isCreatingNewNote = useAppSelector(selectIsCreatingNewNote);
-
-  const dispatch = useAppDispatch();
+  const isCreatingNewNote = useStore(
+    uiStore,
+    (state) => state.isCreatingNewNote,
+  );
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!draftNoteId) return;
 
-    dispatch(updateDraftField({ field: "title", value: e.target.value }));
+    updateDraftField({ field: "title", value: e.target.value });
 
-    dispatch(setIsDirty(true));
+    setIsDirty({ isDirty: true });
   };
 
   const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!draftNoteId) return;
 
     const newTags = e.target.value.split(",").map((tag) => tag.trim());
-    dispatch(updateDraftField({ field: "tags", value: newTags }));
+    updateDraftField({ field: "tags", value: newTags });
 
-    dispatch(setIsDirty(true));
+    setIsDirty({ isDirty: true });
   };
 
   return (
@@ -57,7 +57,7 @@ function EditorPaneHeader() {
 
         <input
           className="focus:outline-strong -m-1.5 rounded-sm p-1.5 font-semibold transition-all duration-150 focus:outline-1"
-          value={draftNoteTags.join(", ")}
+          value={(draftNoteTags || []).join(", ")}
           onChange={handleTagsChange}
           placeholder="Enter tags, comma separated (e.g., Work, Ideas)"
         ></input>

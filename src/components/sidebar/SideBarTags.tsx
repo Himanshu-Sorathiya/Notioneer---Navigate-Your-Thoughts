@@ -1,7 +1,9 @@
+import { useStore } from "@tanstack/react-store";
+
 import { selectTagsByArchiveStatus } from "../../store/features/api/apiSelector.ts";
 import { useGetNotesQuery } from "../../store/features/api/apiSlice.ts";
 
-import { selectIsArchivedView } from "../../store/features/filter/filterSelectors.ts";
+import { filterStore } from "../../store/filter.ts";
 
 import { useAppSelector } from "../../hooks/hooks.ts";
 
@@ -9,7 +11,7 @@ import SideBarTag from "./SideBarTag.tsx";
 import SidebarTagSkeleton from "./SidebarTagSkeleton.tsx";
 
 function SideBarTags() {
-  const isArchivedView = useAppSelector(selectIsArchivedView);
+  const isArchivedView = useStore(filterStore, (state) => state.isArchivedView);
 
   const { isLoading } = useGetNotesQuery();
 
