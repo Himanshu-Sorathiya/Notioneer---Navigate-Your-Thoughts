@@ -11,6 +11,7 @@ import {
   incrementEditorResetKey,
   setIsCreatingNewNote,
   setIsDirty,
+  uiStore,
 } from "../../store/ui.ts";
 
 import type { Note } from "../../types/note.ts";
@@ -21,8 +22,10 @@ const NotesListNote = memo(({ note }: { note: Note }) => {
     (state) => state.selectedNote?.id === note.id,
   );
 
+  const isDirty = useStore(uiStore, (state) => state.isDirty);
+
   const handleSelectNote = () => {
-    if (isNoteSelected) return;
+    if (isNoteSelected || isDirty) return;
 
     setIsCreatingNewNote({ isCreatingNewNote: false });
     setIsDirty({ isDirty: false });
@@ -37,7 +40,9 @@ const NotesListNote = memo(({ note }: { note: Note }) => {
       className={`border-b-focus border-b pb-0.5 ${isNoteSelected ? "bg-focus" : ""}`}
       onClick={handleSelectNote}
     >
-      <div className="hover:bg-focus flex cursor-pointer flex-col gap-2 rounded-lg px-4 py-2">
+      <div
+        className={`hover:bg-focus flex flex-col gap-2 rounded-lg px-4 py-2 ${isDirty ? "cursor-not-allowed" : "cursor-pointer"}`}
+      >
         <h2 className="font-bold">{note.title || "Untitled Note"}</h2>
 
         {note.tags.length > 0 && (

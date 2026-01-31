@@ -1,22 +1,28 @@
-function SideBarTags() {
-  // const isArchivedView = useStore(filterStore, (state) => state.isArchivedView);
+import { useStore } from "@tanstack/react-store";
 
-  // TODO
-  // const tagsByArchiveStatus = useAppSelector((state) =>
-  //   selectTagsByArchiveStatus(state, isArchivedView),
-  // );
+import { filterStore } from "../../store/filter.ts";
+
+import { useTagsByArchiveStatus } from "../../hooks/useTagsByArchiveStatus.ts";
+
+import SideBarTag from "./SideBarTag.tsx";
+import SidebarTagSkeleton from "./SidebarTagSkeleton.tsx";
+
+function SideBarTags() {
+  const isArchivedView = useStore(filterStore, (state) => state.isArchivedView);
+
+  const { tags: tagsByArchiveStatus, notesStatus } =
+    useTagsByArchiveStatus(isArchivedView);
 
   return (
     <div className="flex h-full flex-col gap-2 overflow-hidden">
       <span className="text-[1rem] text-gray-500">Tags</span>
 
       <div className="thin-scrollbar flex h-full flex-col gap-1 overflow-y-auto pr-3 [scrollbar-gutter:stable]">
-        // TODO
-        {/* {isLoading
+        {notesStatus === "pending"
           ? [...Array(7)].map((_, i) => <SidebarTagSkeleton key={i} />)
           : tagsByArchiveStatus.map((tag) => (
               <SideBarTag key={tag} tag={tag} />
-            ))} */}
+            ))}
       </div>
     </div>
   );
