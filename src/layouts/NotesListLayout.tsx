@@ -1,78 +1,68 @@
-import { useEffect } from "react";
-
-import { useStore } from "@tanstack/react-store";
-
-import { selectFilteredAndOrderedNotes } from "../store/features/api/apiSelector.ts";
-import { useGetNotesQuery } from "../store/features/api/apiSlice.ts";
-
-import { notesStore, setDraftNote, setSelectedNote } from "../store/notes.ts";
-import { incrementEditorResetKey, uiStore } from "../store/ui.ts";
-
-import { useAppDispatch, useAppSelector } from "../hooks/hooks.ts";
+import useNotes from "../hooks/useNotes.ts";
 
 import NotesListNewNoteButton from "../components/noteslist/NotesListNewNoteButton.tsx";
 import NotesListNote from "../components/noteslist/NotesListNote.tsx";
 import NotesListNoteSkeleton from "../components/noteslist/NotesListNoteSkeleton.tsx";
 
 function NotesListLayout() {
-  const orderedNotes = useAppSelector(selectFilteredAndOrderedNotes);
+  const { notes, notesStatus, notesFetchStatus, notesError } = useNotes();
+  console.log(notes, notesStatus, notesFetchStatus, notesError);
 
-  const selectedNoteId = useStore(
-    notesStore,
-    (state) => state.selectedNote?.id,
-  );
+  // TODO
+  // const orderedNotes = useAppSelector(selectFilteredAndOrderedNotes);
 
-  const isCreatingNewNote = useStore(
-    uiStore,
-    (state) => state.isCreatingNewNote,
-  );
+  // const selectedNoteId = useStore(
+  //   notesStore,
+  //   (state) => state.selectedNote?.id,
+  // );
 
-  const { isLoading, isFetching } = useGetNotesQuery();
+  // const isCreatingNewNote = useStore(
+  //   uiStore,
+  //   (state) => state.isCreatingNewNote,
+  // );
 
-  const dispatch = useAppDispatch();
+  // TODO
+  // useEffect(() => {
+  //   if (isCreatingNewNote === true || isLoading === true || isFetching === true)
+  //     return;
 
-  useEffect(() => {
-    if (isCreatingNewNote === true || isLoading === true || isFetching === true)
-      return;
+  //   if (orderedNotes.length === 0) {
+  //     if (selectedNoteId) {
+  //       setSelectedNote({ selectedNote: null });
+  //       setDraftNote({ draftNote: null });
 
-    if (orderedNotes.length === 0) {
-      if (selectedNoteId) {
-        setSelectedNote({ selectedNote: null });
-        setDraftNote({ draftNote: null });
+  //       incrementEditorResetKey();
+  //     }
 
-        incrementEditorResetKey();
-      }
+  //     return;
+  //   }
 
-      return;
-    }
+  //   const exists = orderedNotes.some((n) => n.id === selectedNoteId);
 
-    const exists = orderedNotes.some((n) => n.id === selectedNoteId);
+  //   if (!exists) {
+  //     if (selectedNoteId) return;
 
-    if (!exists) {
-      if (selectedNoteId) return;
+  //     setSelectedNote({ selectedNote: orderedNotes[0] });
+  //     setDraftNote({ draftNote: orderedNotes[0] });
 
-      setSelectedNote({ selectedNote: orderedNotes[0] });
-      setDraftNote({ draftNote: orderedNotes[0] });
-
-      incrementEditorResetKey();
-    }
-  }, [
-    orderedNotes.length,
-    selectedNoteId,
-    isCreatingNewNote,
-    isLoading,
-    dispatch,
-  ]);
+  //     incrementEditorResetKey();
+  //   }
+  // }, [
+  //   orderedNotes.length,
+  //   selectedNoteId,
+  //   isCreatingNewNote,
+  //   isLoading,
+  //   dispatch,
+  // ]);
 
   return (
     <div className="thin-scrollbar flex flex-col gap-1 overflow-y-auto px-3 py-4 [scrollbar-gutter:stable]">
       <NotesListNewNoteButton />
 
-      {isLoading
+      {notesStatus === "pending"
         ? [...Array(5)].map((_, i) => <NotesListNoteSkeleton key={i} />)
-        : orderedNotes.map((note) => (
-            <NotesListNote key={note.id} note={note} />
-          ))}
+        : // : orderedNotes.map((note) => (
+          notes.map((note) => <NotesListNote key={note.id} note={note} />)}
     </div>
   );
 }

@@ -1,16 +1,11 @@
 import { useStore } from "@tanstack/react-store";
 
-import { selectTagsByArchiveStatus } from "../../store/features/api/apiSelector.ts";
-
 import {
   filterStore,
   resetFilters,
   setArchivedView,
-  setSelectedTag,
 } from "../../store/filter.ts";
 import { uiStore } from "../../store/ui.ts";
-
-import { useAppSelector } from "../../hooks/hooks.ts";
 
 import Icon from "../Icon.tsx";
 
@@ -27,10 +22,10 @@ function SideBarNotesButton({
   const selectedTag = useStore(filterStore, (state) => state.selectedTag);
 
   const isDirty = useStore(uiStore, (state) => state.isDirty);
-
-  const targetViewTags = useAppSelector((state) =>
-    selectTagsByArchiveStatus(state, archive),
-  );
+  // TODO
+  // const targetViewTags = useAppSelector((state) =>
+  //   selectTagsByArchiveStatus(state, archive),
+  // );
 
   const isActiveView = isArchivedView === archive;
 
@@ -44,10 +39,10 @@ function SideBarNotesButton({
     if (archive === true && isDirty === true) return;
 
     setArchivedView({ archivedView: archive });
-
-    if (selectedTag && !targetViewTags.includes(selectedTag)) {
-      setSelectedTag({ selectedTag: "" });
-    }
+    // TODO
+    // if (selectedTag && !targetViewTags.includes(selectedTag)) {
+    //   setSelectedTag({ selectedTag: "" });
+    // }
   }
 
   const activeClass = isActiveView
