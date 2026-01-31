@@ -2,7 +2,7 @@ import supabase from "./supabase.ts";
 
 import type { Note } from "../types/note.ts";
 
-async function getNotes() {
+async function getNotesApi() {
   const { data, error } = await supabase
     .from("notes")
     .select("id, title, tags, content, is_archived, updated_at")
@@ -15,7 +15,7 @@ async function getNotes() {
   return data as Note[];
 }
 
-async function addNote({ note }: { note: Omit<Note, "id"> }) {
+async function createNoteApi({ note }: { note: Omit<Note, "id"> }) {
   const { data, error } = await supabase
     .from("notes")
     .insert([
@@ -37,7 +37,7 @@ async function addNote({ note }: { note: Omit<Note, "id"> }) {
   return data as Note;
 }
 
-async function updateNote({
+async function updateNoteApi({
   noteId,
   updates,
 }: {
@@ -64,7 +64,7 @@ async function updateNote({
   return data as Note;
 }
 
-async function deleteNote({ noteId }: { noteId: string }) {
+async function deleteNoteApi({ noteId }: { noteId: string }) {
   const { error } = await supabase.from("notes").delete().eq("id", noteId);
 
   if (error) {
@@ -72,4 +72,4 @@ async function deleteNote({ noteId }: { noteId: string }) {
   }
 }
 
-export { addNote, deleteNote, getNotes, updateNote };
+export { createNoteApi, deleteNoteApi, getNotesApi, updateNoteApi };

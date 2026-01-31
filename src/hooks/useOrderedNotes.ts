@@ -4,7 +4,7 @@ import { useStore } from "@tanstack/react-store";
 
 import { filterStore } from "../store/filter.ts";
 
-import useNotes from "../hooks/useNotes.ts";
+import { useNotes } from "../hooks/useNotes.ts";
 
 export function useOrderedNotes() {
   const { notes, notesStatus } = useNotes();

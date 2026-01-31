@@ -1,7 +1,5 @@
 import { useStore } from "@tanstack/react-store";
 
-import { useDeleteNoteMutation } from "../../store/features/api/apiSlice.ts";
-
 import {
   notesStore,
   setDraftNote,
@@ -9,20 +7,22 @@ import {
 } from "../../store/notes.ts";
 import { incrementEditorResetKey, setIsDirty } from "../../store/ui.ts";
 
+import { useDeleteNote } from "../../hooks/useDeleteNote.ts";
+
 import Icon from "../Icon.tsx";
 
 function ActionPanelButton() {
+  const { deleteNote } = useDeleteNote();
+
   const selectedNoteId = useStore(
     notesStore,
     (state) => state.selectedNote?.id,
   );
 
-  const [deleteNote] = useDeleteNoteMutation();
-
   const handleDelete = async () => {
     if (!selectedNoteId) return;
 
-    await deleteNote(selectedNoteId).unwrap();
+    deleteNote({ noteId: selectedNoteId });
 
     setSelectedNote({ selectedNote: null });
     setDraftNote({ draftNote: null });

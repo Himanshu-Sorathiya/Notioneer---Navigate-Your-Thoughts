@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import useNotes from "./useNotes.ts";
+import { useNotes } from "./useNotes.ts";
 
 function useTagsByArchiveStatus(isArchived: boolean) {
   const { notes, notesStatus } = useNotes();

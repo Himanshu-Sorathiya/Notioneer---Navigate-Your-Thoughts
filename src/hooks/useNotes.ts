@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getNotes } from "../services/apiNotes.ts";
+import { getNotesApi } from "../services/apiNotes.ts";
 
 import type { Note } from "../types/note.ts";
 
@@ -12,7 +12,7 @@ function useNotes() {
     error,
   } = useQuery<Note[]>({
     queryKey: ["notes"],
-    queryFn: getNotes,
+    queryFn: getNotesApi,
   });
 
   return {
@@ -23,4 +23,4 @@ function useNotes() {
   };
 }
 
-export default useNotes;
+export { useNotes };

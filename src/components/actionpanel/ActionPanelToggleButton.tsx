@@ -1,7 +1,5 @@
 import { useStore } from "@tanstack/react-store";
 
-import { useUpdateNoteMutation } from "../../store/features/api/apiSlice.ts";
-
 import {
   notesStore,
   setDraftNote,
@@ -9,20 +7,26 @@ import {
 } from "../../store/notes.ts";
 import { incrementEditorResetKey, setIsDirty } from "../../store/ui.ts";
 
+import { useUpdateNote } from "../../hooks/useUpdateNote.ts";
+
 import Icon from "../Icon.tsx";
 
 function ActionPanelToggleButton() {
   const selectedNote = useStore(notesStore, (state) => state.selectedNote);
 
-  const [updateNote] = useUpdateNoteMutation();
+  const { updateNote } = useUpdateNote();
 
   const handleToggle = async () => {
     if (!selectedNote) return;
 
-    await updateNote({
-      ...selectedNote,
-      is_archived: !selectedNote.is_archived,
-    }).unwrap();
+    updateNote({
+      noteId: selectedNote.id,
+      updates: {
+        ...("is_archived" in selectedNote && {
+          is_archived: !selectedNote.is_archived,
+        }),
+      },
+    });
 
     setSelectedNote({ selectedNote: null });
     setDraftNote({ draftNote: null });

@@ -1,10 +1,10 @@
 import { useStore } from "@tanstack/react-store";
 
 import {
-  useAddNoteMutation,
-  useUpdateNoteMutation,
-} from "../../store/features/api/apiSlice.ts";
-
+  notesStore,
+  setDraftNote,
+  setSelectedNote,
+} from "../../store/notes.ts";
 import {
   incrementEditorResetKey,
   setIsCreatingNewNote,
@@ -12,13 +12,11 @@ import {
   uiStore,
 } from "../../store/ui.ts";
 
+import { useCreateNote } from "../../hooks/useCreateNote.ts";
+import { useUpdateNote } from "../../hooks/useUpdateNote.ts";
+
 import EditorPaneButton from "./EditorPaneButton.tsx";
 
-import {
-  notesStore,
-  setDraftNote,
-  setSelectedNote,
-} from "../../store/notes.ts";
 import type { Note } from "../../types/note.ts";
 
 function EditorPaneActions() {
@@ -31,8 +29,8 @@ function EditorPaneActions() {
   );
   const isDirty = useStore(uiStore, (state) => state.isDirty);
 
-  const [addNote] = useAddNoteMutation();
-  const [updateNote] = useUpdateNoteMutation();
+  const { createNote } = useCreateNote();
+  const { updateNote } = useUpdateNote();
 
   const handleSave = async () => {
     if (!draftNote) return;
@@ -42,23 +40,27 @@ function EditorPaneActions() {
       updated_at: new Date().toISOString(),
     };
 
-    try {
-      let savedNote: Note;
+    let savedNote: Note;
 
-      if (isCreatingNewNote) {
-        savedNote = await addNote(noteToSave).unwrap();
-      } else {
-        await updateNote(noteToSave).unwrap();
-        savedNote = noteToSave;
-      }
+    if (isCreatingNewNote) {
+      createNote({ note: noteToSave });
+    } else {
+      updateNote({
+        noteId: noteToSave.id,
+        updates: {
+          ...("title" in noteToSave && { title: noteToSave.title }),
+          ...("tags" in noteToSave && { tags: noteToSave.tags }),
+          ...("content" in noteToSave && { content: noteToSave.content }),
+        },
+      });
+    }
 
-      setIsCreatingNewNote({ isCreatingNewNote: false });
-      setIsDirty({ isDirty: false });
-      incrementEditorResetKey();
+    setIsCreatingNewNote({ isCreatingNewNote: false });
+    setIsDirty({ isDirty: false });
+    incrementEditorResetKey();
 
-      setSelectedNote({ selectedNote: savedNote });
-      setDraftNote({ draftNote: savedNote });
-    } catch (error) {}
+    setSelectedNote({ selectedNote: savedNote });
+    setDraftNote({ draftNote: savedNote });
   };
 
   const handleCancel = () => {
