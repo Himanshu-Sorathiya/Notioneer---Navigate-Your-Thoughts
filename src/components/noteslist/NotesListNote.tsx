@@ -31,8 +31,8 @@ const NotesListNote = memo(({ note }: { note: Note }) => {
     setIsDirty({ isDirty: false });
     incrementEditorResetKey();
 
-    setDraftNote({ draftNote: note });
     setSelectedNote({ selectedNote: note });
+    setDraftNote({ draftNote: note });
   };
 
   return (

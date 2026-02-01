@@ -22,13 +22,18 @@ function ActionPanelButton() {
   const handleDelete = async () => {
     if (!selectedNoteId) return;
 
-    deleteNote({ noteId: selectedNoteId });
+    deleteNote(
+      { noteId: selectedNoteId },
+      {
+        onSuccess: () => {
+          setSelectedNote({ selectedNote: null });
+          setDraftNote({ draftNote: null });
 
-    setSelectedNote({ selectedNote: null });
-    setDraftNote({ draftNote: null });
-
-    setIsDirty({ isDirty: false });
-    incrementEditorResetKey();
+          setIsDirty({ isDirty: false });
+          incrementEditorResetKey();
+        },
+      },
+    );
   };
 
   if (!selectedNoteId) return null;

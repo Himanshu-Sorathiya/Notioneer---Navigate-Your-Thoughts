@@ -28,7 +28,12 @@ export function useOrderedNotes() {
       return matchesArchive && matchesTag && matchesSearch;
     });
 
-    if (!query) return filtered;
+    if (!query) {
+      return [...filtered].sort(
+        (a, b) =>
+          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
+      );
+    }
 
     return [...filtered].sort((a, b) => {
       const getScore = (n: typeof a) => {

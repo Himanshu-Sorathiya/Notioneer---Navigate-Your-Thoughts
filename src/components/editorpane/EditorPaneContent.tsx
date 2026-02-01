@@ -10,6 +10,7 @@ function EditorPaneContent() {
     notesStore,
     (state) => state.draftNote?.content,
   );
+
   const editorResetKey = useStore(uiStore, (state) => state.editorResetKey);
 
   const ref = useRef<HTMLDivElement>(null);

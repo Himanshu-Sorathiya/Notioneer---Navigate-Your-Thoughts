@@ -37,7 +37,7 @@ function SideBarNotesButton({
       return;
     }
 
-    if (archive === true && isDirty === true) return;
+    if (isDirty === true) return;
 
     setArchivedView({ archivedView: archive });
     if (selectedTag && !targetViewTags.includes(selectedTag)) {
@@ -54,7 +54,7 @@ function SideBarNotesButton({
   return (
     <button
       className={`hover:bg-focus group text-strong flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 transition-all duration-150 disabled:cursor-not-allowed ${activeClass}`}
-      disabled={archive === true && isDirty === true}
+      disabled={isDirty === true}
       onClick={handleNotesViewChange}
     >
       <Icon

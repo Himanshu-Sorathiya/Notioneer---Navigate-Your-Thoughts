@@ -2,14 +2,21 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { createNoteApi } from "../services/apiNotes.ts";
 
+import type { Note } from "../types/note.ts";
+
 function useCreateNote() {
   const queryClient = useQueryClient();
 
   const { data, status, error, mutate } = useMutation({
+    mutationKey: ["notes"],
     mutationFn: createNoteApi,
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    onSuccess: (newNote) => {
+      queryClient.setQueryData(["notes"], (oldNotes: Note[] | undefined) => {
+        const existingNotes = oldNotes || [];
+
+        return [newNote, ...existingNotes];
+      });
     },
   });
 

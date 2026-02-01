@@ -35,41 +35,48 @@ function EditorPaneActions() {
   const handleSave = async () => {
     if (!draftNote) return;
 
-    const noteToSave: Note = {
-      ...draftNote,
-      updated_at: new Date().toISOString(),
+    const onSaveSuccess = (savedNote: Note) => {
+      setIsCreatingNewNote({ isCreatingNewNote: false });
+      setIsDirty({ isDirty: false });
+
+      setSelectedNote({ selectedNote: savedNote });
+      setDraftNote({ draftNote: savedNote });
+
+      incrementEditorResetKey();
     };
 
-    let savedNote: Note;
-
     if (isCreatingNewNote) {
-      createNote({ note: noteToSave });
-    } else {
-      updateNote({
-        noteId: noteToSave.id,
-        updates: {
-          ...("title" in noteToSave && { title: noteToSave.title }),
-          ...("tags" in noteToSave && { tags: noteToSave.tags }),
-          ...("content" in noteToSave && { content: noteToSave.content }),
+      createNote(
+        { note: draftNote },
+        {
+          onSuccess: onSaveSuccess,
         },
-      });
+      );
+    } else {
+      updateNote(
+        {
+          noteId: draftNote.id,
+          updates: {
+            ...("title" in draftNote && { title: draftNote.title }),
+            ...("tags" in draftNote && { tags: draftNote.tags }),
+            ...("content" in draftNote && { content: draftNote.content }),
+          },
+        },
+        {
+          onSuccess: onSaveSuccess,
+        },
+      );
     }
-
-    setIsCreatingNewNote({ isCreatingNewNote: false });
-    setIsDirty({ isDirty: false });
-    incrementEditorResetKey();
-
-    setSelectedNote({ selectedNote: savedNote });
-    setDraftNote({ draftNote: savedNote });
   };
 
   const handleCancel = () => {
     setIsCreatingNewNote({ isCreatingNewNote: false });
     setIsDirty({ isDirty: false });
-    incrementEditorResetKey();
 
     setSelectedNote({ selectedNote: selectedNote });
     setDraftNote({ draftNote: selectedNote });
+
+    incrementEditorResetKey();
   };
 
   return (

@@ -19,20 +19,25 @@ function ActionPanelToggleButton() {
   const handleToggle = async () => {
     if (!selectedNote) return;
 
-    updateNote({
-      noteId: selectedNote.id,
-      updates: {
-        ...("is_archived" in selectedNote && {
-          is_archived: !selectedNote.is_archived,
-        }),
+    updateNote(
+      {
+        noteId: selectedNote.id,
+        updates: {
+          ...("is_archived" in selectedNote && {
+            is_archived: !selectedNote.is_archived,
+          }),
+        },
       },
-    });
+      {
+        onSuccess: () => {
+          setSelectedNote({ selectedNote: null });
+          setDraftNote({ draftNote: null });
 
-    setSelectedNote({ selectedNote: null });
-    setDraftNote({ draftNote: null });
-
-    setIsDirty({ isDirty: false });
-    incrementEditorResetKey();
+          setIsDirty({ isDirty: false });
+          incrementEditorResetKey();
+        },
+      },
+    );
   };
 
   if (!selectedNote) return null;
