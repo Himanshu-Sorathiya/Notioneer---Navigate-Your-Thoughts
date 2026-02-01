@@ -8,7 +8,7 @@ function useDeleteNote() {
   const queryClient = useQueryClient();
 
   const { data, status, error, mutate } = useMutation({
-    mutationKey: ["notes"],
+    mutationKey: ["notes", "delete"],
     mutationFn: deleteNoteApi,
 
     onSuccess: (_, { noteId }) => {

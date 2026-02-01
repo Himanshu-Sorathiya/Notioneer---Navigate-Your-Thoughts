@@ -8,7 +8,7 @@ function useUpdateNote() {
   const queryClient = useQueryClient();
 
   const { data, status, error, mutate } = useMutation({
-    mutationKey: ["notes"],
+    mutationKey: ["notes", "update"],
     mutationFn: updateNoteApi,
 
     onSuccess: (updatedNote) => {

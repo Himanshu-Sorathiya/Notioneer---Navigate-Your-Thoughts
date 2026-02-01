@@ -8,7 +8,7 @@ function useCreateNote() {
   const queryClient = useQueryClient();
 
   const { data, status, error, mutate } = useMutation({
-    mutationKey: ["notes"],
+    mutationKey: ["notes", "create"],
     mutationFn: createNoteApi,
 
     onSuccess: (newNote) => {

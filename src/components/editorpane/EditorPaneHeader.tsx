@@ -43,7 +43,7 @@ function EditorPaneHeader() {
     <div className="border-b-surface flex flex-col gap-3 border-b pb-3">
       <input
         className="focus:outline-strong -m-1.5 rounded-sm p-1.5 text-2xl font-bold transition-all duration-150 focus:outline-1"
-        value={draftNoteTitle}
+        value={draftNoteTitle || ""}
         onChange={handleTitleChange}
         placeholder="Enter note title here"
       ></input>
