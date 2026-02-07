@@ -102,8 +102,8 @@
     }
   }
 
-  --animate-main-progress: slide-main 5s infinite linear 1s;
-  --animate-entry-progress: slide-entry 5s infinite linear;
+  --animate-main-progress: slide-main 2s infinite linear 400ms;
+  --animate-entry-progress: slide-entry 2s infinite linear;
 }
 
 @plugin "tailwind-scrollbar" {

@@ -1,5 +1,10 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import toast from "react-hot-toast";
 
 import AppLayout from "./layouts/AppLayout.tsx";
 
@@ -11,6 +16,16 @@ const queryClient = new QueryClient({
       gcTime: Infinity,
     },
   },
+  queryCache: new QueryCache({
+    onError: () => {
+      toast.error(
+        "Whoops! We hit a snag in the terrain while loading your thoughts. Give it another shot and let's get you back on track!",
+        {
+          position: "top-center",
+        },
+      );
+    },
+  }),
 });
 
 function App() {
