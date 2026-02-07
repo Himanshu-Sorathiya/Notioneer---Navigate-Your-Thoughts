@@ -91,7 +91,7 @@ function EditorPaneActions() {
       <EditorPaneButton
         label="Cancel"
         className="bg-muted hover:bg-focus"
-        disabled={!isDirty}
+        disabled={!isDirty && !isCreatingNewNote}
         onClick={handleCancel}
       />
     </div>

@@ -18,7 +18,7 @@ const createEmptyNote = (): Note => ({
   title: "",
   tags: [],
   content: "",
-  updated_at: new Date().toISOString(),
+  updated_at: "",
   is_archived: false,
 });
 

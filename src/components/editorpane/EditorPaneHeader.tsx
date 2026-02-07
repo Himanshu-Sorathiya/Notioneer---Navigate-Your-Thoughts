@@ -71,7 +71,13 @@ function EditorPaneHeader() {
             <span className="text-gray-300">Last Edited</span>
           </div>
 
-          <span className="font-semibold">{draftNoteUpdatedAt}</span>
+          <span className="font-semibold">
+            {draftNoteUpdatedAt &&
+              new Intl.DateTimeFormat("en-US", {
+                dateStyle: "long",
+                timeStyle: "short",
+              }).format(new Date(draftNoteUpdatedAt))}
+          </span>
         </div>
       )}
     </div>

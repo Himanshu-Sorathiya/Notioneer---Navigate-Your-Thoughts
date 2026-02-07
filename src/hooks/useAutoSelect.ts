@@ -25,7 +25,7 @@ function useAutoSelect({
   );
 
   useEffect(() => {
-    if (isCreatingNewNote === true || notesStatus === "pending") return;
+    if (isCreatingNewNote || notesStatus === "pending") return;
 
     if (orderedNotes.length === 0) {
       if (selectedNoteId) {

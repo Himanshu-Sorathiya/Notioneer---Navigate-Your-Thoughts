@@ -27,6 +27,10 @@ function SideBarNotesButton({
   const selectedTag = useStore(filterStore, (state) => state.selectedTag);
 
   const isDirty = useStore(uiStore, (state) => state.isDirty);
+  const isCreatingNewNote = useStore(
+    uiStore,
+    (state) => state.isCreatingNewNote,
+  );
 
   const isActiveView = isArchivedView === archive;
 
@@ -37,7 +41,7 @@ function SideBarNotesButton({
       return;
     }
 
-    if (isDirty === true) return;
+    if (isDirty) return;
 
     setArchivedView({ archivedView: archive });
     if (selectedTag && !targetViewTags.includes(selectedTag)) {
@@ -54,7 +58,7 @@ function SideBarNotesButton({
   return (
     <button
       className={`hover:bg-focus group text-strong flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 transition-all duration-150 disabled:cursor-not-allowed ${activeClass}`}
-      disabled={isDirty === true}
+      disabled={isDirty || isCreatingNewNote}
       onClick={handleNotesViewChange}
     >
       <Icon

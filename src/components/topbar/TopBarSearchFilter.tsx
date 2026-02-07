@@ -9,6 +9,10 @@ function TopBarSearchFilter() {
   const searchFilter = useStore(filterStore, (state) => state.searchFilter);
 
   const isDirty = useStore(uiStore, (state) => state.isDirty);
+  const isCreatingNewNote = useStore(
+    uiStore,
+    (state) => state.isCreatingNewNote,
+  );
 
   return (
     <div className="relative min-w-sm">
@@ -16,7 +20,7 @@ function TopBarSearchFilter() {
         type="text"
         placeholder="Search by Title, Tags and Content..."
         className={`bg-base peer focus:border-strong focus:text-strong w-full rounded-md border border-gray-500 py-3 pr-4 pl-12 text-sm text-gray-400 transition-all duration-150 outline-none disabled:cursor-not-allowed ${searchFilter ? "text-strong" : ""} `}
-        disabled={isDirty}
+        disabled={isDirty || isCreatingNewNote}
         value={searchFilter}
         onChange={(e) => setSearchFilter({ searchFilter: e.target.value })}
       />

@@ -36,9 +36,10 @@ const NotesListNote = memo(({ note }: { note: Note }) => {
   };
 
   return (
-    <div
-      className={`border-b-focus border-b pb-0.5 ${isNoteSelected ? "bg-focus" : ""}`}
+    <button
+      className={`border-b-focus w-full border-b pb-0.5 text-left ${isNoteSelected ? "bg-focus" : ""}`}
       onClick={handleSelectNote}
+      disabled={isDirty}
     >
       <div
         className={`hover:bg-focus flex flex-col gap-2 rounded-lg px-4 py-2 ${isDirty ? "cursor-not-allowed" : "cursor-pointer"}`}
@@ -55,9 +56,15 @@ const NotesListNote = memo(({ note }: { note: Note }) => {
           </div>
         )}
 
-        <p className="text-sm">{note.updated_at}</p>
+        <p className="text-sm">
+          {new Intl.DateTimeFormat("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }).format(new Date(note.updated_at))}
+        </p>
       </div>
-    </div>
+    </button>
   );
 });
 
