@@ -1,39 +1,42 @@
 import { useIsMutating } from "@tanstack/react-query";
+import { useStore } from "@tanstack/react-store";
+
+import { notesStore } from "../store/notes.ts";
 
 import { useNotes } from "../hooks/useNotes.ts";
 
 import EditorPaneActions from "../components/editorpane/EditorPaneActions.tsx";
 import EditorPaneContent from "../components/editorpane/EditorPaneContent.tsx";
 import EditorPaneContentSkeleton from "../components/editorpane/EditorPaneContentSkeleton.tsx";
+import EditorPaneEmptyState from "../components/editorpane/EditorPaneEmptyState.tsx";
 import EditorPaneHeader from "../components/editorpane/EditorPaneHeader.tsx";
 import EditorPaneHeaderSkeleton from "../components/editorpane/EditorPaneHeaderSkeleton.tsx";
+import FlowLoader from "../components/FlowLoader.tsx";
 
 function EditorPaneLayout() {
   const { notesStatus } = useNotes();
 
   const mutatingCount = useIsMutating();
 
+  const draftNoteId = useStore(notesStore, (state) => state.draftNote?.id);
+
   return (
     <div className="border-x-surface relative flex h-full flex-col gap-2 overflow-hidden border-x p-5">
-      {mutatingCount > 0 && (
-        <>
-          <div className="bg-main animate-main-progress absolute top-0 left-0 z-50 h-1 delay-1000"></div>
-
-          <div className="bg-main animate-entry-progress absolute top-0 left-[-25%] z-50 h-1"></div>
-        </>
-      )}
+      {mutatingCount > 0 && <FlowLoader />}
 
       {notesStatus === "pending" ? (
         <>
           <EditorPaneHeaderSkeleton />
           <EditorPaneContentSkeleton />
         </>
-      ) : (
+      ) : draftNoteId ? (
         <>
           <EditorPaneHeader />
           <EditorPaneContent />
           <EditorPaneActions />
         </>
+      ) : (
+        <EditorPaneEmptyState />
       )}
     </div>
   );

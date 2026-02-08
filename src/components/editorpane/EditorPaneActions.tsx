@@ -83,14 +83,14 @@ function EditorPaneActions() {
     <div className="border-t-surface flex justify-end gap-2 border-t pt-3">
       <EditorPaneButton
         label="Save"
-        className="bg-main hover:bg-[#2547d0]"
+        className="bg-main disabled:bg-main hover:bg-[#2547d0]"
         disabled={!isDirty}
         onClick={handleSave}
       />
 
       <EditorPaneButton
         label="Cancel"
-        className="bg-muted hover:bg-focus"
+        className="bg-muted hover:bg-focus disabled:bg-muted"
         disabled={!isDirty && !isCreatingNewNote}
         onClick={handleCancel}
       />

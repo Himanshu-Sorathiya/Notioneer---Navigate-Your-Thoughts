@@ -4,11 +4,8 @@ import {
   filterStore,
   resetFilters,
   setArchivedView,
-  setSelectedTag,
 } from "../../store/filter.ts";
 import { uiStore } from "../../store/ui.ts";
-
-import { useTagsByArchiveStatus } from "../../hooks/useTagsByArchiveStatus.ts";
 
 import Icon from "../Icon.tsx";
 
@@ -21,8 +18,6 @@ function SideBarNotesButton({
   iconId: string;
   label: string;
 }) {
-  const { tags: targetViewTags } = useTagsByArchiveStatus(archive);
-
   const isArchivedView = useStore(filterStore, (state) => state.isArchivedView);
   const selectedTag = useStore(filterStore, (state) => state.selectedTag);
 
@@ -44,9 +39,6 @@ function SideBarNotesButton({
     if (isDirty) return;
 
     setArchivedView({ archivedView: archive });
-    if (selectedTag && !targetViewTags.includes(selectedTag)) {
-      setSelectedTag({ selectedTag: "" });
-    }
   }
 
   const activeClass = isActiveView

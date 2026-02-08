@@ -5,6 +5,10 @@ function EditorPaneContentSkeleton() {
       <div className="bg-mark h-4 w-[95%] animate-pulse rounded" />
       <div className="bg-mark h-4 w-[92%] animate-pulse rounded" />
       <div className="bg-mark h-4 w-[96%] animate-pulse rounded" />
+      <div className="bg-mark h-4 w-[50%] animate-pulse rounded" />
+
+      <div className="bg-mark h-4 w-[98%] animate-pulse rounded" />
+      <div className="bg-mark h-4 w-[95%] animate-pulse rounded" />
       <div className="bg-mark h-4 w-[40%] animate-pulse rounded" />
     </div>
   );

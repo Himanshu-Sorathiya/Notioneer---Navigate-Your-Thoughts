@@ -12,7 +12,7 @@ function EditorPaneHeaderSkeleton() {
           <span className="text-gray-300">Tags</span>
         </div>
 
-        <div className="bg-mark h-5 w-1/2 animate-pulse rounded-sm" />
+        <div className="bg-mark h-5 w-1/3 animate-pulse rounded-sm" />
       </div>
 
       <div className="grid grid-cols-[1fr_4fr] items-center gap-2">
@@ -22,7 +22,7 @@ function EditorPaneHeaderSkeleton() {
           <span className="text-gray-300">Last Edited</span>
         </div>
 
-        <div className="bg-mark h-5 w-2/3 animate-pulse rounded-sm" />
+        <div className="bg-mark h-5 w-1/2 animate-pulse rounded-sm" />
       </div>
     </div>
   );

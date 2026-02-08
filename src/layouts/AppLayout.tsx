@@ -7,7 +7,12 @@ import NotesListLayout from "./NotesListLayout.tsx";
 import SideBarLayout from "./SideBarLayout.tsx";
 import TopBarLayout from "./TopBarLayout.tsx";
 
+import { useNotes } from "../hooks/useNotes.ts";
+
+import FlowLoader from "../components/FlowLoader.tsx";
+
 function AppLayout() {
+  const { notesStatus } = useNotes();
   const mutatingCount = useIsMutating();
 
   return (
@@ -58,6 +63,8 @@ function AppLayout() {
       {mutatingCount > 0 && (
         <div className="absolute inset-0 z-60 cursor-wait" />
       )}
+
+      {notesStatus === "pending" && <FlowLoader />}
     </div>
   );
 }
