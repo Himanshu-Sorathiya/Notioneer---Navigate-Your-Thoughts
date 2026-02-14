@@ -39,9 +39,12 @@ function DeleteNoteModal({ note }: { note: Note }) {
     );
   };
 
+  const modalTitle =
+    note?.title.length > 15 ? `${note?.title.slice(0, 15)}...` : note?.title;
+
   return (
     <div className="flex min-w-lg flex-col gap-3">
-      <ModalHeader title={`Delete "${note?.title}" Note?`} />
+      <ModalHeader title={`Delete "${modalTitle}" Note?`} />
 
       <ModalDescription description="Want to clean up your workspace? Deleting this note will remove it permanently from your collection in Notioneer!" />
 

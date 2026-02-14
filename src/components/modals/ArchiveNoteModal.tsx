@@ -53,9 +53,12 @@ function ArchiveNoteModal({
     );
   };
 
-  const title = isArchived
-    ? `Unarchive "${note?.title}"?`
-    : `Archive "${note?.title}"?`;
+  const titlePreview =
+    note?.title.length > 15 ? `${note.title.slice(0, 15)}...` : note?.title;
+
+  const modalTitle = isArchived
+    ? `Unarchive "${titlePreview}"?`
+    : `Archive "${titlePreview}"?`;
 
   const description = isArchived
     ? "Ready to bring this note back? Unarchiving will return it to your main notes list so you can access it easily in Notioneer!"
@@ -65,7 +68,7 @@ function ArchiveNoteModal({
 
   return (
     <div className="flex min-w-lg flex-col gap-3">
-      <ModalHeader title={title} />
+      <ModalHeader title={modalTitle} />
 
       <ModalDescription description={description} />
 

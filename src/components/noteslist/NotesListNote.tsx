@@ -48,7 +48,9 @@ const NotesListNote = memo(({ note }: { note: Note }) => {
       onClick={handleSelectNote}
     >
       <div className="hover:bg-focus flex flex-col gap-2 rounded-lg px-4 py-2">
-        <h2 className="font-bold">{note.title || "Untitled Note"}</h2>
+        <h2 className="line-clamp-2 font-bold text-pretty wrap-break-word">
+          {note.title || "Untitled Note"}
+        </h2>
 
         {note.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 text-xs">
