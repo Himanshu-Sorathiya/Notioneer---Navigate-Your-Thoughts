@@ -1,6 +1,7 @@
 import { useIsMutating } from "@tanstack/react-query";
 import { useStore } from "@tanstack/react-store";
 
+import { modalStore } from "../store/modal.ts";
 import { notesStore } from "../store/notes.ts";
 
 import { useNotes } from "../hooks/useNotes.ts";
@@ -18,11 +19,15 @@ function EditorPaneLayout() {
 
   const mutatingCount = useIsMutating();
 
+  const id = useStore(modalStore, (state) => state.id);
+
   const draftNoteId = useStore(notesStore, (state) => state.draftNote?.id);
+
+  const isMutating = mutatingCount > 0 && !id;
 
   return (
     <div className="border-x-surface relative flex h-full flex-col gap-2 overflow-hidden border-x p-5">
-      {mutatingCount > 0 && <FlowLoader />}
+      {isMutating && <FlowLoader />}
 
       {notesStatus === "pending" ? (
         <>

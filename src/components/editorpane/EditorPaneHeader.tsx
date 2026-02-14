@@ -40,7 +40,10 @@ function EditorPaneHeader() {
   };
 
   return (
-    <div className="border-b-surface flex flex-col gap-3 border-b pb-3">
+    <div
+      key={draftNoteId}
+      className="border-b-surface flex translate-y-0 flex-col gap-3 border-b pb-3 opacity-100 transition-all duration-300 starting:translate-y-2 starting:opacity-0"
+    >
       <input
         className="focus:outline-strong -m-1.5 rounded-sm p-1.5 text-2xl font-bold transition-all duration-150 focus:outline-1"
         value={draftNoteTitle || ""}

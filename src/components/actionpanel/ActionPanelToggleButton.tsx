@@ -12,7 +12,7 @@ function ActionPanelToggleButton() {
 
   return (
     <button
-      className="hover:text-main flex w-full cursor-pointer items-center gap-2 rounded-lg border border-gray-500 px-4 py-2 text-center text-gray-300 transition-all duration-150"
+      className="hover:text-main flex w-full cursor-pointer items-center gap-2 rounded-lg border border-gray-500 px-4 py-2 text-center text-gray-300 opacity-100 transition-all duration-150 starting:opacity-0"
       onClick={() => openModal("confirm_archive")}
     >
       <Icon

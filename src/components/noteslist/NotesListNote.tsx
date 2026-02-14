@@ -17,7 +17,7 @@ import {
 
 import type { Note } from "../../types/note.ts";
 
-const NotesListNote = memo(({ note }: { note: Note }) => {
+const NotesListNote = memo(({ note, index }: { note: Note; index: number }) => {
   const isNoteSelected = useStore(
     notesStore,
     (state) => state.selectedNote?.id === note.id,
@@ -44,7 +44,8 @@ const NotesListNote = memo(({ note }: { note: Note }) => {
 
   return (
     <button
-      className={`border-b-focus w-full cursor-pointer border-b pb-0.5 text-left ${isNoteSelected ? "bg-focus" : ""}`}
+      style={{ transitionDelay: `${index * 50}ms` }}
+      className={`border-b-focus w-full translate-y-0 cursor-pointer border-b pb-0.5 text-left opacity-100 transition-all duration-300 starting:translate-y-2 starting:opacity-0 ${isNoteSelected ? "bg-focus" : ""}`}
       onClick={handleSelectNote}
     >
       <div className="hover:bg-focus flex flex-col gap-2 rounded-lg px-4 py-2">

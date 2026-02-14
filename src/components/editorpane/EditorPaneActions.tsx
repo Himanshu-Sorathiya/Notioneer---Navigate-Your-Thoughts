@@ -75,7 +75,10 @@ function EditorPaneActions() {
   };
 
   return (
-    <div className="border-t-surface flex justify-end gap-2 border-t pt-3">
+    <div
+      key={draftNote?.id}
+      className="border-t-surface flex translate-y-0 justify-end gap-2 border-t pt-3 opacity-100 transition-all duration-300 starting:translate-y-2 starting:opacity-0"
+    >
       <EditorPaneButton
         label="Save"
         className="bg-main disabled:bg-main hover:bg-[#2547d0]"

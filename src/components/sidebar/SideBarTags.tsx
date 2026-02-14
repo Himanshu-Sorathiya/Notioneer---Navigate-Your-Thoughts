@@ -22,7 +22,9 @@ function SideBarTags() {
         {notesStatus === "pending" ? (
           [...Array(7)].map((_, i) => <SidebarTagSkeleton key={i} />)
         ) : tagsByArchiveStatus.length > 0 ? (
-          tagsByArchiveStatus.map((tag) => <SideBarTag key={tag} tag={tag} />)
+          tagsByArchiveStatus.map((tag, index) => (
+            <SideBarTag key={tag} tag={tag} index={index} />
+          ))
         ) : (
           <SidebarTagsEmptyState />
         )}

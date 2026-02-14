@@ -32,8 +32,8 @@ function NotesListLayout() {
 
       {notesStatus === "pending"
         ? [...Array(5)].map((_, i) => <NotesListNoteSkeleton key={i} />)
-        : orderedNotes.map((note) => (
-            <NotesListNote key={note.id} note={note} />
+        : orderedNotes.map((note, index) => (
+            <NotesListNote key={note.id} note={note} index={index} />
           ))}
     </div>
   );

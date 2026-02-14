@@ -10,6 +10,7 @@ import { useUpdateNote } from "../../hooks/useUpdateNote.ts";
 
 import CancelButton from "../buttons/CancelButton.tsx";
 import ConfirmButton from "../buttons/ConfirmButton.tsx";
+import FormSpinner from "../FormSpinner.tsx";
 import ModalDescription from "../ModalDescription.tsx";
 import ModalHeader from "../ModalHeader.tsx";
 
@@ -22,7 +23,7 @@ function ArchiveNoteModal({
   note: Note;
   isArchived: boolean;
 }) {
-  const { updateNote } = useUpdateNote();
+  const { updateNote, updateNoteStatus } = useUpdateNote();
 
   const handleToggle = async () => {
     if (!note) return;
@@ -67,7 +68,9 @@ function ArchiveNoteModal({
   const confirmLabel = isArchived ? "Yes, Unarchive" : "Yes, Archive";
 
   return (
-    <div className="flex min-w-lg flex-col gap-3">
+    <div className="relative flex min-w-lg flex-col gap-3 p-6 backdrop-blur-xs">
+      {updateNoteStatus === "pending" && <FormSpinner />}
+
       <ModalHeader title={modalTitle} />
 
       <ModalDescription description={description} />
