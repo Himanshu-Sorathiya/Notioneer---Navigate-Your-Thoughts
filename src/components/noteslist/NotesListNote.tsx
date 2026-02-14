@@ -2,6 +2,7 @@ import { memo } from "react";
 
 import { useStore } from "@tanstack/react-store";
 
+import { openModal } from "../../store/modal.ts";
 import {
   notesStore,
   setDraftNote,
@@ -25,7 +26,13 @@ const NotesListNote = memo(({ note }: { note: Note }) => {
   const isDirty = useStore(uiStore, (state) => state.isDirty);
 
   const handleSelectNote = () => {
-    if (isNoteSelected || isDirty) return;
+    if (isNoteSelected) return;
+
+    if (isDirty) {
+      openModal("discard_changes", note);
+
+      return;
+    }
 
     setIsCreatingNewNote({ isCreatingNewNote: false });
     setIsDirty({ isDirty: false });
@@ -37,13 +44,10 @@ const NotesListNote = memo(({ note }: { note: Note }) => {
 
   return (
     <button
-      className={`border-b-focus w-full border-b pb-0.5 text-left ${isNoteSelected ? "bg-focus" : ""}`}
+      className={`border-b-focus w-full cursor-pointer border-b pb-0.5 text-left ${isNoteSelected ? "bg-focus" : ""}`}
       onClick={handleSelectNote}
-      disabled={isDirty}
     >
-      <div
-        className={`hover:bg-focus flex flex-col gap-2 rounded-lg px-4 py-2 ${isDirty ? "cursor-not-allowed" : "cursor-pointer"}`}
-      >
+      <div className="hover:bg-focus flex flex-col gap-2 rounded-lg px-4 py-2">
         <h2 className="font-bold">{note.title || "Untitled Note"}</h2>
 
         {note.tags.length > 0 && (

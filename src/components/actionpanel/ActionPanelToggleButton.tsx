@@ -1,51 +1,19 @@
 import { useStore } from "@tanstack/react-store";
 
-import {
-  notesStore,
-  setDraftNote,
-  setSelectedNote,
-} from "../../store/notes.ts";
-import { incrementEditorResetKey, setIsDirty } from "../../store/ui.ts";
-
-import { useUpdateNote } from "../../hooks/useUpdateNote.ts";
+import { openModal } from "../../store/modal.ts";
+import { notesStore } from "../../store/notes.ts";
 
 import Icon from "../Icon.tsx";
 
 function ActionPanelToggleButton() {
   const selectedNote = useStore(notesStore, (state) => state.selectedNote);
 
-  const { updateNote } = useUpdateNote();
-
-  const handleToggle = async () => {
-    if (!selectedNote) return;
-
-    updateNote(
-      {
-        noteId: selectedNote.id,
-        updates: {
-          ...("is_archived" in selectedNote && {
-            is_archived: !selectedNote.is_archived,
-          }),
-        },
-      },
-      {
-        onSuccess: () => {
-          setSelectedNote({ selectedNote: null });
-          setDraftNote({ draftNote: null });
-
-          setIsDirty({ isDirty: false });
-          incrementEditorResetKey();
-        },
-      },
-    );
-  };
-
   if (!selectedNote) return null;
 
   return (
     <button
       className="hover:text-main flex w-full cursor-pointer items-center gap-2 rounded-lg border border-gray-500 px-4 py-2 text-center text-gray-300 transition-all duration-150"
-      onClick={handleToggle}
+      onClick={() => openModal("confirm_archive")}
     >
       <Icon
         id={`${selectedNote.is_archived === false ? "icon-archive-notes" : "icon-unarchive-notes"}`}

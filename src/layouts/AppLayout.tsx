@@ -1,18 +1,35 @@
 import { useIsMutating } from "@tanstack/react-query";
+import { useStore } from "@tanstack/react-store";
 import { Toaster } from "react-hot-toast";
 
 import ActionPanelLayout from "./ActionPaneLayout.tsx";
 import EditorPaneLayout from "./EditorPaneLayout.tsx";
+import ModalLayout from "./ModalLayout.tsx";
 import NotesListLayout from "./NotesListLayout.tsx";
 import SideBarLayout from "./SideBarLayout.tsx";
 import TopBarLayout from "./TopBarLayout.tsx";
 
+import { filterStore } from "../store/filter.ts";
+import { modalStore } from "../store/modal.ts";
+import { notesStore } from "../store/notes.ts";
+
 import { useNotes } from "../hooks/useNotes.ts";
 
 import FlowLoader from "../components/FlowLoader.tsx";
+import ArchiveNoteModal from "../components/modals/ArchiveNoteModal.tsx";
+import DeleteNoteModal from "../components/modals/DeleteNoteModal.tsx";
+import DiscardChangesModal from "../components/modals/DiscardChangesModal.tsx";
 
 function AppLayout() {
   const { notesStatus } = useNotes();
+
+  const selectedNote = useStore(notesStore, (state) => state.selectedNote);
+
+  const isArchivedView = useStore(filterStore, (state) => state.isArchivedView);
+
+  const id = useStore(modalStore, (state) => state.id);
+  const note = useStore(modalStore, (state) => state.data);
+
   const mutatingCount = useIsMutating();
 
   return (
@@ -47,6 +64,28 @@ function AppLayout() {
           },
         }}
       />
+
+      {id &&
+        ["confirm_archive", "confirm_delete", "discard_changes"].includes(
+          id,
+        ) && (
+          <ModalLayout>
+            {id === "confirm_archive" && selectedNote && (
+              <ArchiveNoteModal
+                note={selectedNote}
+                isArchived={isArchivedView}
+              />
+            )}
+
+            {id === "confirm_delete" && selectedNote && (
+              <DeleteNoteModal note={selectedNote} />
+            )}
+
+            {id === "discard_changes" && selectedNote && (
+              <DiscardChangesModal note={note} />
+            )}
+          </ModalLayout>
+        )}
 
       <SideBarLayout />
 

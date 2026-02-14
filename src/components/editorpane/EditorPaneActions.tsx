@@ -1,5 +1,6 @@
 import { useStore } from "@tanstack/react-store";
 
+import { openModal } from "../../store/modal.ts";
 import {
   notesStore,
   setDraftNote,
@@ -35,7 +36,7 @@ function EditorPaneActions() {
   const handleSave = async () => {
     if (!draftNote) return;
 
-    const onSaveSuccess = (savedNote: Note) => {
+    function onSaveSuccess(savedNote: Note) {
       setIsCreatingNewNote({ isCreatingNewNote: false });
       setIsDirty({ isDirty: false });
 
@@ -43,7 +44,7 @@ function EditorPaneActions() {
       setDraftNote({ draftNote: savedNote });
 
       incrementEditorResetKey();
-    };
+    }
 
     if (isCreatingNewNote) {
       createNote(
@@ -70,13 +71,7 @@ function EditorPaneActions() {
   };
 
   const handleCancel = () => {
-    setIsCreatingNewNote({ isCreatingNewNote: false });
-    setIsDirty({ isDirty: false });
-
-    setSelectedNote({ selectedNote: selectedNote });
-    setDraftNote({ draftNote: selectedNote });
-
-    incrementEditorResetKey();
+    openModal("discard_changes", { note: selectedNote });
   };
 
   return (
