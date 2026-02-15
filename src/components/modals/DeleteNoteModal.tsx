@@ -1,5 +1,11 @@
+import { useStore } from "@tanstack/react-store";
+
 import { closeModal } from "../../store/modal.ts";
-import { setDraftNote, setSelectedNote } from "../../store/notes.ts";
+import {
+  notesStore,
+  setDraftNote,
+  setSelectedNote,
+} from "../../store/notes.ts";
 import {
   incrementEditorResetKey,
   setIsCreatingNewNote,
@@ -14,16 +20,23 @@ import FormSpinner from "../FormSpinner.tsx";
 import ModalDescription from "../ModalDescription.tsx";
 import ModalHeader from "../ModalHeader.tsx";
 
-import type { Note } from "../../types/note.ts";
-
-function DeleteNoteModal({ note }: { note: Note }) {
+function DeleteNoteModal() {
   const { deleteNote, deleteNoteStatus } = useDeleteNote();
 
+  const selectedNoteId = useStore(
+    notesStore,
+    (state) => state.selectedNote?.id,
+  );
+  const selectedNoteTitle = useStore(
+    notesStore,
+    (state) => state.selectedNote?.title,
+  );
+
   const handleDelete = async () => {
-    if (!note.id) return;
+    if (!selectedNoteId) return;
 
     deleteNote(
-      { noteId: note.id },
+      { noteId: selectedNoteId },
       {
         onSuccess: () => {
           setSelectedNote({ selectedNote: null });
@@ -41,7 +54,9 @@ function DeleteNoteModal({ note }: { note: Note }) {
   };
 
   const modalTitle =
-    note?.title.length > 15 ? `${note?.title.slice(0, 15)}...` : note?.title;
+    selectedNoteTitle!.length > 15
+      ? `${selectedNoteTitle!.slice(0, 15)}...`
+      : selectedNoteTitle!;
 
   return (
     <div className="flex min-w-lg flex-col gap-3 p-6">

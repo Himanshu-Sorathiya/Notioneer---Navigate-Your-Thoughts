@@ -1,5 +1,12 @@
+import { useStore } from "@tanstack/react-store";
+
+import { filterStore } from "../../store/filter.ts";
 import { closeModal } from "../../store/modal.ts";
-import { setDraftNote, setSelectedNote } from "../../store/notes.ts";
+import {
+  notesStore,
+  setDraftNote,
+  setSelectedNote,
+} from "../../store/notes.ts";
 import {
   incrementEditorResetKey,
   setIsCreatingNewNote,
@@ -14,26 +21,22 @@ import FormSpinner from "../FormSpinner.tsx";
 import ModalDescription from "../ModalDescription.tsx";
 import ModalHeader from "../ModalHeader.tsx";
 
-import type { Note } from "../../types/note.ts";
-
-function ArchiveNoteModal({
-  note,
-  isArchived,
-}: {
-  note: Note;
-  isArchived: boolean;
-}) {
+function ArchiveNoteModal() {
   const { updateNote, updateNoteStatus } = useUpdateNote();
 
+  const selectedNote = useStore(notesStore, (state) => state.selectedNote);
+
+  const isArchivedView = useStore(filterStore, (state) => state.isArchivedView);
+
   const handleToggle = async () => {
-    if (!note) return;
+    if (!selectedNote?.id) return;
 
     updateNote(
       {
-        noteId: note.id,
+        noteId: selectedNote.id,
         updates: {
-          ...("is_archived" in note && {
-            is_archived: !note.is_archived,
+          ...("is_archived" in selectedNote && {
+            is_archived: !selectedNote.is_archived,
           }),
         },
       },
@@ -55,17 +58,19 @@ function ArchiveNoteModal({
   };
 
   const titlePreview =
-    note?.title.length > 15 ? `${note.title.slice(0, 15)}...` : note?.title;
+    selectedNote!.title.length > 15
+      ? `${selectedNote!.title.slice(0, 15)}...`
+      : selectedNote!.title;
 
-  const modalTitle = isArchived
-    ? `Unarchive "${titlePreview}"?`
-    : `Archive "${titlePreview}"?`;
+  const modalTitle = isArchivedView
+    ? `Unarchive "${titlePreview}" Note?`
+    : `Archive "${titlePreview}" Note?`;
 
-  const description = isArchived
+  const description = isArchivedView
     ? "Ready to bring this note back? Unarchiving will return it to your main notes list so you can access it easily in Notioneer!"
     : "Ready to tuck this note away? Archiving will move it out of your main view, keeping your workspace clean and focused with Notioneer!";
 
-  const confirmLabel = isArchived ? "Yes, Unarchive" : "Yes, Archive";
+  const confirmLabel = isArchivedView ? "Yes, Unarchive" : "Yes, Archive";
 
   return (
     <div className="relative flex min-w-lg flex-col gap-3 p-6 backdrop-blur-xs">

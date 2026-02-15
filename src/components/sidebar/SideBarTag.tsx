@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import { useStore } from "@tanstack/react-store";
 
 import { filterStore, setSelectedTag } from "../../store/filter.ts";
@@ -5,7 +7,7 @@ import { uiStore } from "../../store/ui.ts";
 
 import Icon from "../Icon.tsx";
 
-function SideBarTag({ tag, index }: { tag: string; index: number }) {
+const SideBarTag = memo(({ tag, index }: { tag: string; index: number }) => {
   const isTagActive = useStore(
     filterStore,
     (state) => state.selectedTag === tag,
@@ -33,6 +35,6 @@ function SideBarTag({ tag, index }: { tag: string; index: number }) {
       </div>
     </button>
   );
-}
+});
 
 export default SideBarTag;
