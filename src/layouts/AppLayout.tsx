@@ -9,9 +9,7 @@ import NotesListLayout from "./NotesListLayout.tsx";
 import SideBarLayout from "./SideBarLayout.tsx";
 import TopBarLayout from "./TopBarLayout.tsx";
 
-import { filterStore } from "../store/filter.ts";
 import { modalStore } from "../store/modal.ts";
-import { notesStore } from "../store/notes.ts";
 
 import { useNotes } from "../hooks/useNotes.ts";
 
@@ -20,15 +18,13 @@ import ArchiveNoteModal from "../components/modals/ArchiveNoteModal.tsx";
 import DeleteNoteModal from "../components/modals/DeleteNoteModal.tsx";
 import DiscardChangesModal from "../components/modals/DiscardChangesModal.tsx";
 
+import type { Note } from "../types/note.ts";
+
 function AppLayout() {
   const { notesStatus } = useNotes();
 
-  const selectedNote = useStore(notesStore, (state) => state.selectedNote);
-
-  const isArchivedView = useStore(filterStore, (state) => state.isArchivedView);
-
   const id = useStore(modalStore, (state) => state.id);
-  const note = useStore(modalStore, (state) => state.data);
+  const data = useStore(modalStore, (state) => state.data);
 
   const mutatingCount = useIsMutating();
 
@@ -70,19 +66,12 @@ function AppLayout() {
           id,
         ) && (
           <ModalLayout>
-            {id === "confirm_archive" && selectedNote && (
-              <ArchiveNoteModal
-                note={selectedNote}
-                isArchived={isArchivedView}
-              />
-            )}
+            {id === "confirm_archive" && <ArchiveNoteModal />}
 
-            {id === "confirm_delete" && selectedNote && (
-              <DeleteNoteModal note={selectedNote} />
-            )}
+            {id === "confirm_delete" && <DeleteNoteModal />}
 
-            {id === "discard_changes" && selectedNote && (
-              <DiscardChangesModal note={note} />
+            {id === "discard_changes" && (
+              <DiscardChangesModal note={data.note as Note} />
             )}
           </ModalLayout>
         )}

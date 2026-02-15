@@ -57,7 +57,7 @@ function DiscardChangesModal({ note }: { note: Note | null }) {
       : "Are you sure you want to discard your changes? Moving to another note will lose your unsaved progress.";
 
   return (
-    <div className="flex min-w-lg flex-col gap-3">
+    <div className="flex min-w-lg flex-col gap-3 p-6">
       <ModalHeader title="Discard changes?" />
 
       <ModalDescription description={description} />
